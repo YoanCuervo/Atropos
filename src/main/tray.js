@@ -10,8 +10,16 @@ const TRAY_ICON_SIZE_PX = 16;
  */
 
 /**
+ * @typedef {object} TrayMenuMessages
+ * @property {string} open
+ * @property {string} refresh
+ * @property {string} quit
+ */
+
+/**
  * @typedef {object} ApplicationTray
  * @property {(tooltipText: string) => void} showTooltip
+ * @property {(menuMessages: TrayMenuMessages) => void} showMenu Rebuilds the menu, e.g. after a language change.
  * @property {() => void} destroy
  */
 
@@ -20,13 +28,11 @@ const TRAY_ICON_SIZE_PX = 16;
  * a right click opens the menu.
  *
  * @param {string} iconPath
- * @param {string} initialTooltipText
  * @param {TrayActions} trayActions
  * @returns {ApplicationTray}
  */
 export function createApplicationTray(
   iconPath,
-  initialTooltipText,
   { onOpenWindowRequested, onRefreshRequested, onQuitRequested },
 ) {
   const trayIcon = nativeImage
@@ -34,19 +40,19 @@ export function createApplicationTray(
     .resize({ width: TRAY_ICON_SIZE_PX, height: TRAY_ICON_SIZE_PX });
   const tray = new Tray(trayIcon);
 
-  tray.setToolTip(initialTooltipText);
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: "Open Atropos", click: onOpenWindowRequested },
-      { label: "Refresh now", click: onRefreshRequested },
-      { type: "separator" },
-      { label: "Quit", click: onQuitRequested },
-    ]),
-  );
   tray.on("click", onOpenWindowRequested);
 
   return {
     showTooltip: (tooltipText) => tray.setToolTip(tooltipText),
+    showMenu: (menuMessages) =>
+      tray.setContextMenu(
+        Menu.buildFromTemplate([
+          { label: menuMessages.open, click: onOpenWindowRequested },
+          { label: menuMessages.refresh, click: onRefreshRequested },
+          { type: "separator" },
+          { label: menuMessages.quit, click: onQuitRequested },
+        ]),
+      ),
     destroy: () => tray.destroy(),
   };
 }

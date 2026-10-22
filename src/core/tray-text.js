@@ -1,9 +1,14 @@
 import { formatWeekdayAndClockTime } from "./date-display.js";
+import { fillMessageTemplate } from "./message-template.js";
 
 /** @typedef {import("./snapshot-journal.js").LimitSnapshot} LimitSnapshot */
 /** @typedef {import("./date-display.js").DateDisplayOptions} DateDisplayOptions */
 
-export const NO_LIMITS_RECORDED_TOOLTIP = "Atropos · no limits recorded yet";
+/**
+ * @typedef {object} TrayTooltipMessages
+ * @property {string} tooltip Template with `{percentage}`, `{resetTime}` and `{updateTime}`.
+ * @property {string} noLimitsTooltip Shown before the first snapshot.
+ */
 
 /**
  * Builds the tray icon tooltip from the latest weekly snapshot,
@@ -11,23 +16,28 @@ export const NO_LIMITS_RECORDED_TOOLTIP = "Atropos · no limits recorded yet";
  * The update time shows how old the figure is when Claude Code has been closed for a while.
  *
  * @param {LimitSnapshot | null} sevenDaySnapshot Latest snapshot of the weekly window.
+ * @param {TrayTooltipMessages} trayMessages Texts of the chosen language.
  * @param {DateDisplayOptions} dateDisplayOptions
  * @returns {string}
  */
-export function formatTrayTooltip(sevenDaySnapshot, dateDisplayOptions) {
+export function formatTrayTooltip(
+  sevenDaySnapshot,
+  trayMessages,
+  dateDisplayOptions,
+) {
   if (sevenDaySnapshot === null) {
-    return NO_LIMITS_RECORDED_TOOLTIP;
+    return trayMessages.noLimitsTooltip;
   }
 
-  const usedPercentageText = `${Math.round(sevenDaySnapshot.usedPercentage)}%`;
-  const resetText = formatWeekdayAndClockTime(
-    Date.parse(sevenDaySnapshot.resetsAt),
-    dateDisplayOptions,
-  );
-  const updateText = formatWeekdayAndClockTime(
-    Date.parse(sevenDaySnapshot.slotStartedAt),
-    dateDisplayOptions,
-  );
-
-  return `Atropos · week ${usedPercentageText} · resets ${resetText} · updated ${updateText}`;
+  return fillMessageTemplate(trayMessages.tooltip, {
+    percentage: Math.round(sevenDaySnapshot.usedPercentage),
+    resetTime: formatWeekdayAndClockTime(
+      Date.parse(sevenDaySnapshot.resetsAt),
+      dateDisplayOptions,
+    ),
+    updateTime: formatWeekdayAndClockTime(
+      Date.parse(sevenDaySnapshot.slotStartedAt),
+      dateDisplayOptions,
+    ),
+  });
 }
