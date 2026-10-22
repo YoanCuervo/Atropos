@@ -1,8 +1,7 @@
 import { appendFile, mkdir, open } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname } from "node:path";
+import { buildJournalPath } from "../core/journal-location.js";
 
-const APPLICATION_DATA_FOLDER_NAME = "Atropos";
-const JOURNAL_FILE_NAME = "limit-snapshots.jsonl";
 const RECENT_JOURNAL_BYTE_COUNT = 4096;
 
 export class MissingApplicationDataPathError extends Error {
@@ -22,16 +21,12 @@ export function resolveJournalPath(environment = process.env) {
   if (!applicationDataPath) {
     throw new MissingApplicationDataPathError();
   }
-  return join(
-    applicationDataPath,
-    APPLICATION_DATA_FOLDER_NAME,
-    JOURNAL_FILE_NAME,
-  );
+  return buildJournalPath(applicationDataPath);
 }
 
 /**
- * Reads only the end of the journal: it grows for twelve months
- * while the status line runs every minute.
+ * Reads only the end of the journal: it keeps growing while the desktop app
+ * is closed, and the status line runs every minute.
  *
  * @param {string} journalPath
  * @returns {Promise<string[]>} Complete lines, oldest first; empty when the journal does not exist yet.
