@@ -1,4 +1,10 @@
 import { InvalidRateLimitsError } from "./errors.js";
+import {
+  isMissing,
+  isNonNegativeFiniteNumber,
+  isPlainObject,
+  isPositiveFiniteNumber,
+} from "./validation.js";
 
 /** @typedef {"five_hour" | "seven_day"} WindowKind */
 
@@ -81,36 +87,4 @@ function readLimitWindow(rawRateLimits, windowKind) {
     usedPercentage,
     resetsAtMs: resetsAtSeconds * MILLISECONDS_PER_SECOND,
   };
-}
-
-/**
- * @param {unknown} value
- * @returns {value is null | undefined}
- */
-function isMissing(value) {
-  return value === undefined || value === null;
-}
-
-/**
- * @param {unknown} value
- * @returns {value is Record<string, unknown>}
- */
-function isPlainObject(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-/**
- * @param {unknown} value
- * @returns {value is number}
- */
-function isNonNegativeFiniteNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) && value >= 0;
-}
-
-/**
- * @param {unknown} value
- * @returns {value is number}
- */
-function isPositiveFiniteNumber(value) {
-  return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
