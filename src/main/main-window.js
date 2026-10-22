@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { is } from "@electron-toolkit/utils";
+import { isAtroposInterfaceUrl } from "./interface-url.js";
 
 let isApplicationQuitting = false;
 
@@ -39,8 +40,16 @@ export function createMainWindow() {
     }
   });
 
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
+  mainWindow.webContents.on("will-navigate", (event, navigationUrl) => {
+    if (!isAtroposInterfaceUrl(navigationUrl)) {
+      event.preventDefault();
+    }
+  });
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (isSecureWebUrl(url)) {
+      shell.openExternal(url);
+    }
     return { action: "deny" };
   });
 
@@ -64,4 +73,14 @@ export function showMainWindow(mainWindow) {
   }
   mainWindow.show();
   mainWindow.focus();
+}
+
+/**
+ * Only secure web links may leave the app, to open in the default browser.
+ *
+ * @param {string} linkUrl
+ * @returns {boolean}
+ */
+function isSecureWebUrl(linkUrl) {
+  return URL.canParse(linkUrl) && new URL(linkUrl).protocol === "https:";
 }
