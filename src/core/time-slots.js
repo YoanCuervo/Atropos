@@ -10,3 +10,13 @@ export const SLOT_DURATION_MS = 6 * 60 * 1000;
 export function computeSlotStartMs(timestampMs) {
   return Math.floor(timestampMs / SLOT_DURATION_MS) * SLOT_DURATION_MS;
 }
+
+/**
+ * Returns the start of the slot that follows the one containing a timestamp.
+ *
+ * @param {number} timestampMs Unix timestamp, in milliseconds.
+ * @returns {number} Unix timestamp, in milliseconds, of the next slot start.
+ */
+export function computeNextSlotStartMs(timestampMs) {
+  return computeSlotStartMs(timestampMs) + SLOT_DURATION_MS;
+}

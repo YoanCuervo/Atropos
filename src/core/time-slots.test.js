@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { SLOT_DURATION_MS, computeSlotStartMs } from "./time-slots.js";
+import {
+  SLOT_DURATION_MS,
+  computeNextSlotStartMs,
+  computeSlotStartMs,
+} from "./time-slots.js";
 
 describe("SLOT_DURATION_MS", () => {
   it("lasts six minutes", () => {
@@ -45,5 +49,23 @@ describe("computeSlotStartMs", () => {
     );
 
     expect(distinctSlotStarts.size).toBe(10);
+  });
+});
+
+describe("computeNextSlotStartMs", () => {
+  it("returns the start of the following slot", () => {
+    const insideSlotMs = Date.UTC(2026, 9, 22, 14, 8, 30, 0);
+
+    expect(computeNextSlotStartMs(insideSlotMs)).toBe(
+      Date.UTC(2026, 9, 22, 14, 12, 0, 0),
+    );
+  });
+
+  it("moves a full slot ahead from an exact slot start", () => {
+    const slotStartMs = Date.UTC(2026, 9, 22, 14, 6, 0, 0);
+
+    expect(computeNextSlotStartMs(slotStartMs)).toBe(
+      Date.UTC(2026, 9, 22, 14, 12, 0, 0),
+    );
   });
 });
