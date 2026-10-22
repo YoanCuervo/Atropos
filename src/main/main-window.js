@@ -1,9 +1,16 @@
-import { shell, BrowserWindow } from "electron";
+import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { is } from "@electron-toolkit/utils";
 
+let isApplicationQuitting = false;
+
+app.on("before-quit", () => {
+  isApplicationQuitting = true;
+});
+
 /**
- * Creates the main window and loads the interface into it.
+ * Creates the main window. Closing it only hides it: Atropos keeps running in the tray
+ * until the user quits from the tray menu.
  *
  * @returns {BrowserWindow}
  */
@@ -23,6 +30,13 @@ export function createMainWindow() {
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+  });
+
+  mainWindow.on("close", (event) => {
+    if (!isApplicationQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
