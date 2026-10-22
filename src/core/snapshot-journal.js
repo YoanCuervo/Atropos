@@ -98,3 +98,50 @@ function parseJson(journalLine) {
     throw new InvalidJournalLineError("(line)", journalLine);
   }
 }
+
+/**
+ * Reads journal lines back into snapshots, skipping the lines that cannot be read.
+ * A single damaged line must not prevent the rest of the journal from being used.
+ *
+ * @param {string[]} journalLines
+ * @returns {LimitSnapshot[]}
+ */
+export function parseReadableJournalLines(journalLines) {
+  return journalLines.flatMap((journalLine) => {
+    try {
+      return [parseJournalLine(journalLine)];
+    } catch (error) {
+      if (error instanceof InvalidJournalLineError) {
+        return [];
+      }
+      throw error;
+    }
+  });
+}
+
+/**
+ * Keeps the candidate snapshots whose slot and window are not recorded yet,
+ * so the journal holds at most one snapshot per slot and per window: the first one observed.
+ *
+ * @param {LimitSnapshot[]} candidateSnapshots Snapshots of the current slot.
+ * @param {LimitSnapshot[]} recordedSnapshots Snapshots already in the journal.
+ * @returns {LimitSnapshot[]}
+ */
+export function selectSnapshotsToRecord(candidateSnapshots, recordedSnapshots) {
+  const recordedSnapshotKeys = new Set(
+    recordedSnapshots.map(createSnapshotKey),
+  );
+
+  return candidateSnapshots.filter(
+    (candidateSnapshot) =>
+      !recordedSnapshotKeys.has(createSnapshotKey(candidateSnapshot)),
+  );
+}
+
+/**
+ * @param {LimitSnapshot} limitSnapshot
+ * @returns {string}
+ */
+function createSnapshotKey(limitSnapshot) {
+  return `${limitSnapshot.slotStartedAt}|${limitSnapshot.windowKind}`;
+}
