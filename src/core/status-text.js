@@ -1,11 +1,8 @@
+import { formatClockTime, formatWeekdayAndClockTime } from "./date-display.js";
+
 /** @typedef {import("./rate-limits.js").RateLimits} RateLimits */
 /** @typedef {import("./rate-limits.js").LimitWindow} LimitWindow */
-
-/**
- * @typedef {object} DateDisplayOptions
- * @property {string} locale BCP 47 locale used for weekday names, e.g. "en-GB".
- * @property {string} timeZone IANA time zone used for reset times, e.g. "Europe/Paris".
- */
+/** @typedef {import("./date-display.js").DateDisplayOptions} DateDisplayOptions */
 
 export const NO_LIMITS_TEXT = "Limits appear after the first reply";
 export const UNREADABLE_LIMITS_TEXT = "Limits unreadable";
@@ -28,7 +25,7 @@ export function formatStatusText(rateLimits, dateDisplayOptions) {
 
   const windowTexts = [];
   if (rateLimits.fiveHour !== null) {
-    const resetTimeText = formatResetTime(
+    const resetTimeText = formatClockTime(
       rateLimits.fiveHour.resetsAtMs,
       dateDisplayOptions,
     );
@@ -37,7 +34,7 @@ export function formatStatusText(rateLimits, dateDisplayOptions) {
     );
   }
   if (rateLimits.sevenDay !== null) {
-    const resetDayAndTimeText = formatResetDayAndTime(
+    const resetDayAndTimeText = formatWeekdayAndClockTime(
       rateLimits.sevenDay.resetsAtMs,
       dateDisplayOptions,
     );
@@ -63,33 +60,4 @@ export function formatStatusText(rateLimits, dateDisplayOptions) {
  */
 function formatWindowText(label, limitWindow, resetText) {
   return `${label} ${Math.round(limitWindow.usedPercentage)}% (${resetText})`;
-}
-
-/**
- * @param {number} resetsAtMs
- * @param {DateDisplayOptions} dateDisplayOptions
- * @returns {string} e.g. "17:00"
- */
-function formatResetTime(resetsAtMs, { locale, timeZone }) {
-  return new Intl.DateTimeFormat(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    timeZone,
-  }).format(resetsAtMs);
-}
-
-/**
- * @param {number} resetsAtMs
- * @param {DateDisplayOptions} dateDisplayOptions
- * @returns {string} e.g. "Tue 09:00"
- */
-function formatResetDayAndTime(resetsAtMs, { locale, timeZone }) {
-  return new Intl.DateTimeFormat(locale, {
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-    timeZone,
-  }).format(resetsAtMs);
 }
