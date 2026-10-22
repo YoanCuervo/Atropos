@@ -23,12 +23,12 @@ Le dépôt [Agent Burn](https://github.com/Melvynx/agent-burn) sert d'inspiratio
 
 Claude Code transmet un JSON à la commande de sa barre d'état. C'est la seule source de données d'Atropos.
 
-| Champ | Contenu |
-|---|---|
+| Champ                                   | Contenu                         |
+| --------------------------------------- | ------------------------------- |
 | `rate_limits.five_hour.used_percentage` | pourcentage utilisé, de 0 à 100 |
-| `rate_limits.five_hour.resets_at` | remise à zéro, en secondes Unix |
+| `rate_limits.five_hour.resets_at`       | remise à zéro, en secondes Unix |
 | `rate_limits.seven_day.used_percentage` | pourcentage utilisé, de 0 à 100 |
-| `rate_limits.seven_day.resets_at` | remise à zéro, en secondes Unix |
+| `rate_limits.seven_day.resets_at`       | remise à zéro, en secondes Unix |
 
 - `rate_limits` n'est présent que pour les abonnés Pro et Max, et seulement après la première réponse de l'API dans la session. Son absence est un cas normal à gérer.
 - La commande est relancée à chaque nouveau message, sur un minuteur `refreshInterval` et quand une fenêtre se remet à zéro.
@@ -93,26 +93,31 @@ Une couche n'importe jamais une couche de niveau supérieur.
 
 ## 6. Stack et justifications
 
-| Rôle | Choix | Justification |
-|---|---|---|
-| Application de bureau | Electron | Tout en JavaScript, icône près de l'horloge et notifications natives |
-| Outillage | electron-vite | Structure main / preload / renderer et rechargement à chaud |
-| Interface | React | Composants et état, maîtrisés par le développeur |
-| Langage | JavaScript avec JSDoc | Choix personnel. Les types sont vérifiés par VS Code dans `core/` |
-| Historique | SQLite avec `better-sqlite3` | Un simple fichier, sans serveur, avec des requêtes préparées |
-| Graphiques | Recharts | Composants React prêts à l'emploi |
-| Alertes | `Notification` d'Electron | Notifications Windows natives |
-| Installateur | electron-builder | Installateur NSIS `.exe` |
-| Tests | Vitest | Tests de `core/` uniquement en V1 |
-| Qualité | ESLint et Prettier | Réglages par défaut de Prettier : guillemets doubles, points-virgules, lignes de 80 caractères |
-| Publication | GitHub Actions et Releases | Un tag `v*` construit et publie l'installateur |
+| Rôle                  | Choix                        | Justification                                                                                  |
+| --------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| Application de bureau | Electron                     | Tout en JavaScript, icône près de l'horloge et notifications natives                           |
+| Outillage             | electron-vite                | Structure main / preload / renderer et rechargement à chaud                                    |
+| Interface             | React                        | Composants et état, maîtrisés par le développeur                                               |
+| Langage               | JavaScript avec JSDoc        | Choix personnel. Les types sont vérifiés par VS Code dans `core/`                              |
+| Historique            | SQLite avec `better-sqlite3` | Un simple fichier, sans serveur, avec des requêtes préparées                                   |
+| Graphiques            | Recharts                     | Composants React prêts à l'emploi                                                              |
+| Alertes               | `Notification` d'Electron    | Notifications Windows natives                                                                  |
+| Installateur          | electron-builder             | Installateur NSIS `.exe`                                                                       |
+| Tests                 | Vitest                       | Tests de `core/` uniquement en V1                                                              |
+| Qualité               | ESLint et Prettier           | Réglages par défaut de Prettier : guillemets doubles, points-virgules, lignes de 80 caractères |
+| Publication           | GitHub Actions et Releases   | Un tag `v*` construit et publie l'installateur                                                 |
 
 ## 7. Données
 
 **Fichier d'échange** `%APPDATA%\Atropos\limit-snapshots.jsonl`, une ligne par relevé :
 
 ```json
-{"slotStartedAt":"2026-10-22T14:06:00.000Z","windowKind":"seven_day","usedPercentage":67,"resetsAt":"2026-10-27T08:00:00.000Z"}
+{
+  "slotStartedAt": "2026-10-22T14:06:00.000Z",
+  "windowKind": "seven_day",
+  "usedPercentage": 67,
+  "resetsAt": "2026-10-27T08:00:00.000Z"
+}
 ```
 
 **Base** `%APPDATA%\Atropos\atropos.db` :
@@ -209,24 +214,24 @@ Ces principes sont permanents, indépendamment du risque légal.
 
 Une tâche correspond à une session et à une branche `feature/*` partie de `dev`.
 
-| # | Tâche | Branche |
-|---|---|---|
-| 0 | Renommer le dossier en `Atropos`, `git init`, créer `main` et `dev`, `.gitignore` | — |
-| 1 | Socle : générer le projet electron-vite (React, JS), régler Prettier par défaut, ESLint et Vitest, créer l'arborescence et les scripts npm | `feature/project-setup` |
-| 2 | `core/` : lecture et validation de `rate_limits`, avec tests | `feature/core-rate-limits` |
-| 3 | `core/` : créneaux de 6 minutes et format d'une ligne du journal, avec tests | `feature/core-time-slots` |
-| 4 | Barre d'état : affichage, ajout au journal, activation manuelle dans `settings.json`. **La collecte des données commence ici.** | `feature/statusline` |
-| 5 | Base : schéma, ouverture, import du journal, purge des relevés de plus de 12 mois | `feature/database` |
-| 6 | Planificateur aligné sur les créneaux, icône près de l'horloge avec son info-bulle | `feature/tray` |
-| 7 | IPC et preload : dernier relevé, historique, réglages, envoi des mises à jour | `feature/ipc` |
-| 8 | Interface : structure de la page, vue des limites actuelles, états de chargement, d'erreur et sans données | `feature/limits-view` |
-| 9 | Traductions anglais et français, thèmes System, Light et Dark | `feature/i18n-theme` |
-| 10 | Vue historique : courbe, tableau équivalent, comparaison hebdomadaire | `feature/history-view` |
-| 11 | Vue réglages : langue, thème, alerte, effacement de l'historique, aide à l'activation de la barre d'état | `feature/settings-view` |
-| 12 | Alerte hebdo : décision dans `core/`, notification, table `sent_alerts` | `feature/weekly-alert` |
-| 13 | Empaquetage : electron-builder, livraison de la barre d'état, test de l'installateur | `feature/packaging` |
-| 14 | Workflow de publication GitHub Actions et première publication | `feature/release-workflow` |
-| 15 | README : captures, GIF, schéma, section « Privacy » | `feature/readme` |
-| 16 | Audit `/conform-rgaa`, puis corrections | `feature/accessibility-audit` |
-| 17 | Audit `/conform-cnil`, puis corrections | `feature/privacy-audit` |
-| 18 | Suppression des commentaires qui expliquent le code, fusion de `dev` dans `main`, tag `v1.0.0` | — |
+| #   | Tâche                                                                                                                                      | Branche                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| 0   | Renommer le dossier en `Atropos`, `git init`, créer `main` et `dev`, `.gitignore`                                                          | —                             |
+| 1   | Socle : générer le projet electron-vite (React, JS), régler Prettier par défaut, ESLint et Vitest, créer l'arborescence et les scripts npm | `feature/project-setup`       |
+| 2   | `core/` : lecture et validation de `rate_limits`, avec tests                                                                               | `feature/core-rate-limits`    |
+| 3   | `core/` : créneaux de 6 minutes et format d'une ligne du journal, avec tests                                                               | `feature/core-time-slots`     |
+| 4   | Barre d'état : affichage, ajout au journal, activation manuelle dans `settings.json`. **La collecte des données commence ici.**            | `feature/statusline`          |
+| 5   | Base : schéma, ouverture, import du journal, purge des relevés de plus de 12 mois                                                          | `feature/database`            |
+| 6   | Planificateur aligné sur les créneaux, icône près de l'horloge avec son info-bulle                                                         | `feature/tray`                |
+| 7   | IPC et preload : dernier relevé, historique, réglages, envoi des mises à jour                                                              | `feature/ipc`                 |
+| 8   | Interface : structure de la page, vue des limites actuelles, états de chargement, d'erreur et sans données                                 | `feature/limits-view`         |
+| 9   | Traductions anglais et français, thèmes System, Light et Dark                                                                              | `feature/i18n-theme`          |
+| 10  | Vue historique : courbe, tableau équivalent, comparaison hebdomadaire                                                                      | `feature/history-view`        |
+| 11  | Vue réglages : langue, thème, alerte, effacement de l'historique, aide à l'activation de la barre d'état                                   | `feature/settings-view`       |
+| 12  | Alerte hebdo : décision dans `core/`, notification, table `sent_alerts`                                                                    | `feature/weekly-alert`        |
+| 13  | Empaquetage : electron-builder, livraison de la barre d'état, test de l'installateur                                                       | `feature/packaging`           |
+| 14  | Workflow de publication GitHub Actions et première publication                                                                             | `feature/release-workflow`    |
+| 15  | README : captures, GIF, schéma, section « Privacy »                                                                                        | `feature/readme`              |
+| 16  | Audit `/conform-rgaa`, puis corrections                                                                                                    | `feature/accessibility-audit` |
+| 17  | Audit `/conform-cnil`, puis corrections                                                                                                    | `feature/privacy-audit`       |
+| 18  | Suppression des commentaires qui expliquent le code, fusion de `dev` dans `main`, tag `v1.0.0`                                             | —                             |
