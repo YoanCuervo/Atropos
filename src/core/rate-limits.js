@@ -8,6 +8,9 @@ import {
 
 /** @typedef {"five_hour" | "seven_day"} WindowKind */
 
+/** @type {readonly WindowKind[]} */
+export const WINDOW_KINDS = Object.freeze(["five_hour", "seven_day"]);
+
 /**
  * @typedef {object} LimitWindow
  * @property {WindowKind} windowKind
