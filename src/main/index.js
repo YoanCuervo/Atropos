@@ -13,6 +13,11 @@ import {
 import { createLimitSnapshotsRepository } from "./database/limit-snapshots-repository.js";
 import { openDatabase } from "./database/open-database.js";
 import { maintainHistory } from "./history-maintenance.js";
+import {
+  readLimitsOverview,
+  registerIpcHandlers,
+  sendLimitsUpdate,
+} from "./ipc-handlers.js";
 import { createMainWindow, showMainWindow } from "./main-window.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
 import { createApplicationTray } from "./tray.js";
@@ -30,27 +35,37 @@ app.setPath(
 /** @typedef {import("./tray.js").ApplicationTray} ApplicationTray */
 
 /**
- * Imports the journal, purges old snapshots, then shows the latest weekly usage in the tray.
+ * @typedef {object} RefreshTargets
+ * @property {ApplicationTray} applicationTray
+ * @property {import("electron").BrowserWindow} mainWindow
+ */
+
+/**
+ * Imports the journal and purges old snapshots, then shows the latest limits
+ * in the tray tooltip and sends them to the interface.
  *
  * @param {LimitSnapshotsRepository} limitSnapshotsRepository
- * @param {ApplicationTray} applicationTray
+ * @param {RefreshTargets} refreshTargets
  * @returns {Promise<void>}
  */
-async function refreshHistory(limitSnapshotsRepository, applicationTray) {
+async function refreshHistory(
+  limitSnapshotsRepository,
+  { applicationTray, mainWindow },
+) {
   await maintainHistory({
     journalPath: buildJournalPath(app.getPath("appData")),
     limitSnapshotsRepository,
     nowMs: Date.now(),
   });
+
+  const limitsOverview = readLimitsOverview(limitSnapshotsRepository);
   applicationTray.showTooltip(
-    formatTrayTooltip(
-      limitSnapshotsRepository.findLatestSnapshot("seven_day"),
-      {
-        locale: TRAY_TEXT_LOCALE,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      },
-    ),
+    formatTrayTooltip(limitsOverview.sevenDay, {
+      locale: TRAY_TEXT_LOCALE,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    }),
   );
+  sendLimitsUpdate(mainWindow, limitsOverview);
 }
 
 async function startApplication() {
@@ -64,6 +79,7 @@ async function startApplication() {
     join(app.getPath("userData"), DATABASE_FILE_NAME),
   );
   const limitSnapshotsRepository = createLimitSnapshotsRepository(database);
+  registerIpcHandlers(limitSnapshotsRepository);
   const mainWindow = createMainWindow();
 
   let slotScheduler;
@@ -77,7 +93,7 @@ async function startApplication() {
     },
   );
   slotScheduler = startSlotScheduler(() =>
-    refreshHistory(limitSnapshotsRepository, applicationTray),
+    refreshHistory(limitSnapshotsRepository, { applicationTray, mainWindow }),
   );
 
   app.on("second-instance", () => showMainWindow(mainWindow));

@@ -1,27 +1,49 @@
-export class InvalidRateLimitsError extends Error {
+/**
+ * Base class of the errors raised when received data has a malformed field.
+ */
+class InvalidFieldError extends Error {
   /**
-   * @param {string} fieldPath Path of the malformed field, e.g. "rate_limits.five_hour.resets_at".
+   * @param {string} subject What was being read, e.g. "rate limits".
+   * @param {string} fieldPath Path of the malformed field, or a parenthesized name for the whole value.
    * @param {unknown} receivedValue Value found at that path.
    */
-  constructor(fieldPath, receivedValue) {
+  constructor(subject, fieldPath, receivedValue) {
     super(
-      `Invalid rate limits field "${fieldPath}": received ${JSON.stringify(receivedValue)}.`,
+      `Invalid ${subject} field "${fieldPath}": received ${JSON.stringify(receivedValue)}.`,
     );
-    this.name = "InvalidRateLimitsError";
     this.fieldPath = fieldPath;
   }
 }
 
-export class InvalidJournalLineError extends Error {
+export class InvalidRateLimitsError extends InvalidFieldError {
   /**
-   * @param {string} fieldPath Name of the malformed field, or "(line)" when the whole line is unreadable.
-   * @param {unknown} receivedValue Value found for that field.
+   * @param {string} fieldPath e.g. "rate_limits.five_hour.resets_at", or "(payload)".
+   * @param {unknown} receivedValue
    */
   constructor(fieldPath, receivedValue) {
-    super(
-      `Invalid journal line field "${fieldPath}": received ${JSON.stringify(receivedValue)}.`,
-    );
+    super("rate limits", fieldPath, receivedValue);
+    this.name = "InvalidRateLimitsError";
+  }
+}
+
+export class InvalidJournalLineError extends InvalidFieldError {
+  /**
+   * @param {string} fieldPath e.g. "resetsAt", or "(line)" when the whole line is unreadable.
+   * @param {unknown} receivedValue
+   */
+  constructor(fieldPath, receivedValue) {
+    super("journal line", fieldPath, receivedValue);
     this.name = "InvalidJournalLineError";
-    this.fieldPath = fieldPath;
+  }
+}
+
+export class InvalidHistoryRequestError extends InvalidFieldError {
+  /**
+   * @param {string} fieldPath e.g. "periodDayCount", or "(request)" when the whole request is unusable.
+   * @param {unknown} receivedValue
+   */
+  constructor(fieldPath, receivedValue) {
+    super("history request", fieldPath, receivedValue);
+    this.name = "InvalidHistoryRequestError";
   }
 }

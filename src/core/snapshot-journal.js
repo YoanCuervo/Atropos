@@ -1,4 +1,5 @@
 import { InvalidJournalLineError } from "./errors.js";
+import { WINDOW_KINDS } from "./rate-limits.js";
 import {
   isIsoTimestamp,
   isNonNegativeFiniteNumber,
@@ -17,9 +18,6 @@ import {
  * @property {number} usedPercentage Share of the window already used, from 0 to 100.
  * @property {string} resetsAt ISO 8601 UTC time when the window resets.
  */
-
-/** @type {readonly WindowKind[]} */
-const WINDOW_KINDS = ["five_hour", "seven_day"];
 
 /**
  * Turns the rate limits read during a slot into one snapshot per window present.

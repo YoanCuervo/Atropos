@@ -9,6 +9,8 @@
  *   Deletes the snapshots whose slot started before the cutoff; returns how many were deleted.
  * @property {(windowKind: WindowKind) => LimitSnapshot | null} findLatestSnapshot
  *   Returns the most recent snapshot of a window, or `null` when none is stored.
+ * @property {(windowKind: WindowKind, sinceIso: string) => LimitSnapshot[]} findSnapshotsSince
+ *   Returns the snapshots of a window whose slot started at or after a date, oldest first.
  */
 
 /**
@@ -36,6 +38,16 @@ export function createLimitSnapshotsRepository(database) {
       LIMIT 1`,
   );
 
+  const findSnapshotsSinceStatement = database.prepare(
+    `SELECT slot_started_at AS slotStartedAt,
+            window_kind     AS windowKind,
+            used_percentage AS usedPercentage,
+            resets_at       AS resetsAt
+       FROM limit_snapshots
+      WHERE window_kind = ? AND slot_started_at >= ?
+      ORDER BY slot_started_at ASC`,
+  );
+
   const insertSnapshotsInTransaction = database.transaction((limitSnapshots) =>
     limitSnapshots.reduce(
       (insertedCount, limitSnapshot) =>
@@ -51,5 +63,7 @@ export function createLimitSnapshotsRepository(database) {
       deleteSnapshotsTakenBeforeStatement.run(cutoffIso).changes,
     findLatestSnapshot: (windowKind) =>
       findLatestSnapshotStatement.get(windowKind) ?? null,
+    findSnapshotsSince: (windowKind, sinceIso) =>
+      findSnapshotsSinceStatement.all(windowKind, sinceIso),
   };
 }
