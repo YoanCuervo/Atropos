@@ -4,6 +4,8 @@ import {
   createLimitSnapshots,
   formatJournalLine,
   parseJournalLine,
+  parseReadableJournalLines,
+  selectSnapshotsToRecord,
 } from "./snapshot-journal.js";
 
 const SLOT_START_MS = Date.UTC(2026, 9, 22, 14, 6, 0, 0);
@@ -140,5 +142,54 @@ describe("parseJournalLine", () => {
 
   it("throws an InvalidJournalLineError instance", () => {
     expect(() => parseJournalLine("not json")).toThrow(InvalidJournalLineError);
+  });
+});
+
+describe("parseReadableJournalLines", () => {
+  it("reads every valid line and skips the damaged ones", () => {
+    const validLine = formatJournalLine(createSevenDaySnapshot());
+
+    expect(
+      parseReadableJournalLines([validLine, '{"slotStartedAt":', validLine]),
+    ).toEqual([createSevenDaySnapshot(), createSevenDaySnapshot()]);
+  });
+
+  it("returns no snapshot for an empty journal", () => {
+    expect(parseReadableJournalLines([])).toEqual([]);
+  });
+});
+
+describe("selectSnapshotsToRecord", () => {
+  const [fiveHourSnapshot, sevenDaySnapshot] = createLimitSnapshots(
+    createRateLimits(),
+    SLOT_START_MS,
+  );
+
+  it("keeps every candidate when the journal is empty", () => {
+    expect(
+      selectSnapshotsToRecord([fiveHourSnapshot, sevenDaySnapshot], []),
+    ).toEqual([fiveHourSnapshot, sevenDaySnapshot]);
+  });
+
+  it("drops a window already recorded in the same slot", () => {
+    const laterReadingOfSameSlot = { ...fiveHourSnapshot, usedPercentage: 45 };
+
+    expect(
+      selectSnapshotsToRecord(
+        [laterReadingOfSameSlot, sevenDaySnapshot],
+        [fiveHourSnapshot],
+      ),
+    ).toEqual([sevenDaySnapshot]);
+  });
+
+  it("keeps a window recorded only in a previous slot", () => {
+    const previousSlotSnapshot = {
+      ...fiveHourSnapshot,
+      slotStartedAt: "2026-10-22T14:00:00.000Z",
+    };
+
+    expect(
+      selectSnapshotsToRecord([fiveHourSnapshot], [previousSlotSnapshot]),
+    ).toEqual([fiveHourSnapshot]);
   });
 });
