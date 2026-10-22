@@ -36,3 +36,14 @@ export class InvalidJournalLineError extends InvalidFieldError {
     this.name = "InvalidJournalLineError";
   }
 }
+
+export class InvalidHistoryRequestError extends InvalidFieldError {
+  /**
+   * @param {string} fieldPath e.g. "periodDayCount", or "(request)" when the whole request is unusable.
+   * @param {unknown} receivedValue
+   */
+  constructor(fieldPath, receivedValue) {
+    super("history request", fieldPath, receivedValue);
+    this.name = "InvalidHistoryRequestError";
+  }
+}
