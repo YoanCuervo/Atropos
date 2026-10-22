@@ -1,10 +1,10 @@
 import { ipcMain } from "electron";
-import { is } from "@electron-toolkit/utils";
 import {
   computeHistoryStartMs,
   parseHistoryRequest,
 } from "../core/history-request.js";
 import { IPC_CHANNELS } from "../shared/ipc-channels.js";
+import { isAtroposInterfaceUrl } from "./interface-url.js";
 
 /** @typedef {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} LimitSnapshotsRepository */
 /** @typedef {import("../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
@@ -86,20 +86,4 @@ function handleTrustedRequests(channel, handleRequest) {
     }
     return handleRequest(...requestArguments);
   });
-}
-
-/**
- * @param {string} pageUrl
- * @returns {boolean}
- */
-function isAtroposInterfaceUrl(pageUrl) {
-  if (!URL.canParse(pageUrl)) {
-    return false;
-  }
-  const { origin, protocol } = new URL(pageUrl);
-
-  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    return origin === new URL(process.env["ELECTRON_RENDERER_URL"]).origin;
-  }
-  return protocol === "file:";
 }
