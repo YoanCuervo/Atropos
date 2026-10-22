@@ -1,0 +1,22 @@
+appId: dev.yoancuervo.atropos
+productName: Atropos
+directories:
+  buildResources: build
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!docs/*"
+  - "!electron.vite.config.{js,ts,mjs,cjs}"
+  - "!vitest.config.{js,mjs}"
+  - "!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,.prettierrc.json,.editorconfig,CHANGELOG.md,README.md}"
+  - "!{.env,.env.*,.npmrc}"
+asarUnpack:
+  - "resources/**"
+win:
+  executableName: Atropos
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+npmRebuild: false
