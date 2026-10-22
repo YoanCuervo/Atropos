@@ -1,6 +1,6 @@
-import { app, shell, BrowserWindow } from "electron";
+import { app } from "electron";
 import { join } from "path";
-import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import { electronApp, optimizer } from "@electron-toolkit/utils";
 import {
   APPLICATION_DATA_FOLDER_NAME,
   buildJournalPath,
@@ -8,6 +8,7 @@ import {
 import { createLimitSnapshotsRepository } from "./database/limit-snapshots-repository.js";
 import { openDatabase } from "./database/open-database.js";
 import { maintainHistory } from "./history-maintenance.js";
+import { createMainWindow } from "./main-window.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
 const DATABASE_FILE_NAME = "atropos.db";
@@ -16,36 +17,6 @@ app.setPath(
   "userData",
   join(app.getPath("appData"), APPLICATION_DATA_FOLDER_NAME),
 );
-
-function createMainWindow() {
-  const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
-    autoHideMenuBar: true,
-    webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true,
-    },
-  });
-
-  mainWindow.on("ready-to-show", () => {
-    mainWindow.show();
-  });
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url);
-    return { action: "deny" };
-  });
-
-  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-    mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-  } else {
-    mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
-  }
-}
 
 /**
  * @param {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} limitSnapshotsRepository
