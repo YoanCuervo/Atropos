@@ -12,12 +12,13 @@
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "postinstall": "install-electron && electron-builder install-app-deps",
+    "postinstall": "install-electron",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win"
   },
   "dependencies": {
-    "@electron-toolkit/utils": "^4.0.0"
+    "@electron-toolkit/utils": "^4.0.0",
+    "better-sqlite3": "^13.0.3"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^3.0.0",
