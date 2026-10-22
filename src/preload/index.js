@@ -4,6 +4,8 @@ import { IPC_CHANNELS } from "../shared/ipc-channels.js";
 /** @typedef {import("../main/ipc-handlers.js").LimitsOverview} LimitsOverview */
 /** @typedef {import("../core/history-request.js").HistoryRequest} HistoryRequest */
 /** @typedef {import("../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
+/** @typedef {import("../core/settings.js").Settings} Settings */
+/** @typedef {import("../core/settings.js").SettingsChange} SettingsChange */
 
 /**
  * The only functions of the main process the interface can reach, as `window.atropos`.
@@ -20,6 +22,18 @@ const atroposApi = {
    */
   getLimitHistory: (historyRequest) =>
     ipcRenderer.invoke(IPC_CHANNELS.getLimitHistory, historyRequest),
+
+  /**
+   * @returns {Promise<Settings>}
+   */
+  getSettings: () => ipcRenderer.invoke(IPC_CHANNELS.getSettings),
+
+  /**
+   * @param {SettingsChange} settingsChange
+   * @returns {Promise<Settings>} The settings once the change is saved.
+   */
+  updateSettings: (settingsChange) =>
+    ipcRenderer.invoke(IPC_CHANNELS.updateSettings, settingsChange),
 
   /**
    * @param {(limitsOverview: LimitsOverview) => void} handleLimitsUpdate

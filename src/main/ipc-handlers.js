@@ -3,11 +3,14 @@ import {
   computeHistoryStartMs,
   parseHistoryRequest,
 } from "../core/history-request.js";
+import { parseSettingsChange } from "../core/settings.js";
 import { IPC_CHANNELS } from "../shared/ipc-channels.js";
 import { isAtroposInterfaceUrl } from "./interface-url.js";
 
 /** @typedef {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} LimitSnapshotsRepository */
 /** @typedef {import("../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
+/** @typedef {import("../core/settings.js").Settings} Settings */
+/** @typedef {import("./settings-store.js").SettingsStore} SettingsStore */
 
 /**
  * @typedef {object} LimitsOverview
@@ -39,9 +42,16 @@ export function readLimitsOverview(limitSnapshotsRepository) {
 /**
  * Answers the requests the interface may send through the preload.
  *
- * @param {LimitSnapshotsRepository} limitSnapshotsRepository
+ * @param {object} ipcDependencies
+ * @param {LimitSnapshotsRepository} ipcDependencies.limitSnapshotsRepository
+ * @param {SettingsStore} ipcDependencies.settingsStore
+ * @param {(settings: Settings) => void} ipcDependencies.onSettingsChanged Applies the new settings outside the interface: theme, tray texts.
  */
-export function registerIpcHandlers(limitSnapshotsRepository) {
+export function registerIpcHandlers({
+  limitSnapshotsRepository,
+  settingsStore,
+  onSettingsChanged,
+}) {
   handleTrustedRequests(IPC_CHANNELS.getLimitsOverview, () =>
     readLimitsOverview(limitSnapshotsRepository),
   );
@@ -57,6 +67,18 @@ export function registerIpcHandlers(limitSnapshotsRepository) {
       windowKind,
       historyStartIso,
     );
+  });
+
+  handleTrustedRequests(IPC_CHANNELS.getSettings, () =>
+    settingsStore.getSettings(),
+  );
+
+  handleTrustedRequests(IPC_CHANNELS.updateSettings, (rawSettingsChange) => {
+    const settings = settingsStore.changeSettings(
+      parseSettingsChange(rawSettingsChange),
+    );
+    onSettingsChanged(settings);
+    return settings;
   });
 }
 

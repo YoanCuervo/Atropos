@@ -6,4 +6,6 @@ export const IPC_CHANNELS = Object.freeze({
   getLimitsOverview: "limits:get-overview",
   getLimitHistory: "limits:get-history",
   limitsUpdated: "limits:updated",
+  getSettings: "settings:get",
+  updateSettings: "settings:update",
 });

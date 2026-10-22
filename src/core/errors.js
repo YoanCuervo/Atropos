@@ -47,3 +47,25 @@ export class InvalidHistoryRequestError extends InvalidFieldError {
     this.name = "InvalidHistoryRequestError";
   }
 }
+
+export class InvalidSettingsChangeError extends InvalidFieldError {
+  /**
+   * @param {string} fieldPath e.g. "theme", or "(change)" when the whole change is unusable.
+   * @param {unknown} receivedValue
+   */
+  constructor(fieldPath, receivedValue) {
+    super("settings change", fieldPath, receivedValue);
+    this.name = "InvalidSettingsChangeError";
+  }
+}
+
+export class MissingTemplateValueError extends Error {
+  /**
+   * @param {string} placeholderName Name of the placeholder that received no value, e.g. "percentage".
+   */
+  constructor(placeholderName) {
+    super(`No value given for the message placeholder "{${placeholderName}}".`);
+    this.name = "MissingTemplateValueError";
+    this.placeholderName = placeholderName;
+  }
+}

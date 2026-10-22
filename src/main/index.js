@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, nativeTheme } from "electron";
 import { join } from "path";
 import { electronApp, optimizer } from "@electron-toolkit/utils";
 import trayIconPath from "../../resources/icon.png?asset";
@@ -6,10 +6,9 @@ import {
   APPLICATION_DATA_FOLDER_NAME,
   buildJournalPath,
 } from "../core/journal-location.js";
-import {
-  NO_LIMITS_RECORDED_TOOLTIP,
-  formatTrayTooltip,
-} from "../core/tray-text.js";
+import { buildSettingsPath } from "../core/settings-location.js";
+import { formatTrayTooltip } from "../core/tray-text.js";
+import { getMessages } from "../shared/locales/index.js";
 import { createLimitSnapshotsRepository } from "./database/limit-snapshots-repository.js";
 import { openDatabase } from "./database/open-database.js";
 import { maintainHistory } from "./history-maintenance.js";
@@ -19,12 +18,12 @@ import {
   sendLimitsUpdate,
 } from "./ipc-handlers.js";
 import { createMainWindow, showMainWindow } from "./main-window.js";
+import { createSettingsStore } from "./settings-store.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
 import { createApplicationTray } from "./tray.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
 const DATABASE_FILE_NAME = "atropos.db";
-const TRAY_TEXT_LOCALE = "en-GB";
 
 app.setPath(
   "userData",
@@ -32,13 +31,50 @@ app.setPath(
 );
 
 /** @typedef {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} LimitSnapshotsRepository */
+/** @typedef {import("./ipc-handlers.js").LimitsOverview} LimitsOverview */
+/** @typedef {import("./settings-store.js").SettingsStore} SettingsStore */
 /** @typedef {import("./tray.js").ApplicationTray} ApplicationTray */
+/** @typedef {import("../core/settings.js").Settings} Settings */
 
 /**
  * @typedef {object} RefreshTargets
  * @property {ApplicationTray} applicationTray
  * @property {import("electron").BrowserWindow} mainWindow
+ * @property {SettingsStore} settingsStore
  */
+
+/**
+ * @param {ApplicationTray} applicationTray
+ * @param {LimitsOverview} limitsOverview
+ * @param {Settings} settings
+ */
+function showTrayTooltip(applicationTray, limitsOverview, settings) {
+  const messages = getMessages(settings.language);
+  applicationTray.showTooltip(
+    formatTrayTooltip(limitsOverview.sevenDay, messages.tray, {
+      locale: messages.dateLocale,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    }),
+  );
+}
+
+/**
+ * Applies the settings that live outside the interface. The theme goes through
+ * `nativeTheme`, which also switches `prefers-color-scheme` in the interface.
+ *
+ * @param {Settings} settings
+ * @param {ApplicationTray} applicationTray
+ * @param {LimitSnapshotsRepository} limitSnapshotsRepository
+ */
+function applySettings(settings, applicationTray, limitSnapshotsRepository) {
+  nativeTheme.themeSource = settings.theme;
+  applicationTray.showMenu(getMessages(settings.language).tray);
+  showTrayTooltip(
+    applicationTray,
+    readLimitsOverview(limitSnapshotsRepository),
+    settings,
+  );
+}
 
 /**
  * Imports the journal and purges old snapshots, then shows the latest limits
@@ -50,7 +86,7 @@ app.setPath(
  */
 async function refreshHistory(
   limitSnapshotsRepository,
-  { applicationTray, mainWindow },
+  { applicationTray, mainWindow, settingsStore },
 ) {
   await maintainHistory({
     journalPath: buildJournalPath(app.getPath("appData")),
@@ -59,12 +95,7 @@ async function refreshHistory(
   });
 
   const limitsOverview = readLimitsOverview(limitSnapshotsRepository);
-  applicationTray.showTooltip(
-    formatTrayTooltip(limitsOverview.sevenDay, {
-      locale: TRAY_TEXT_LOCALE,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    }),
-  );
+  showTrayTooltip(applicationTray, limitsOverview, settingsStore.getSettings());
   sendLimitsUpdate(mainWindow, limitsOverview);
 }
 
@@ -79,21 +110,34 @@ async function startApplication() {
     join(app.getPath("userData"), DATABASE_FILE_NAME),
   );
   const limitSnapshotsRepository = createLimitSnapshotsRepository(database);
-  registerIpcHandlers(limitSnapshotsRepository);
-  const mainWindow = createMainWindow();
+  const settingsStore = createSettingsStore(
+    buildSettingsPath(app.getPath("appData")),
+  );
 
   let slotScheduler;
-  const applicationTray = createApplicationTray(
-    trayIconPath,
-    NO_LIMITS_RECORDED_TOOLTIP,
-    {
-      onOpenWindowRequested: () => showMainWindow(mainWindow),
-      onRefreshRequested: () => slotScheduler.runNow(),
-      onQuitRequested: () => app.quit(),
-    },
+  const applicationTray = createApplicationTray(trayIconPath, {
+    onOpenWindowRequested: () => showMainWindow(mainWindow),
+    onRefreshRequested: () => slotScheduler.runNow(),
+    onQuitRequested: () => app.quit(),
+  });
+  applySettings(
+    settingsStore.getSettings(),
+    applicationTray,
+    limitSnapshotsRepository,
   );
+  registerIpcHandlers({
+    limitSnapshotsRepository,
+    settingsStore,
+    onSettingsChanged: (settings) =>
+      applySettings(settings, applicationTray, limitSnapshotsRepository),
+  });
+  const mainWindow = createMainWindow();
   slotScheduler = startSlotScheduler(() =>
-    refreshHistory(limitSnapshotsRepository, { applicationTray, mainWindow }),
+    refreshHistory(limitSnapshotsRepository, {
+      applicationTray,
+      mainWindow,
+      settingsStore,
+    }),
   );
 
   app.on("second-instance", () => showMainWindow(mainWindow));

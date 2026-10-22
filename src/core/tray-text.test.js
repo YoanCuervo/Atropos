@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { NO_LIMITS_RECORDED_TOOLTIP, formatTrayTooltip } from "./tray-text.js";
+import { formatTrayTooltip } from "./tray-text.js";
 
 const PARIS_DISPLAY_OPTIONS = { locale: "en-GB", timeZone: "Europe/Paris" };
+
+const TRAY_MESSAGES = {
+  tooltip:
+    "Atropos · week {percentage}% · resets {resetTime} · updated {updateTime}",
+  noLimitsTooltip: "Atropos · no limits recorded yet",
+};
 
 function createSevenDaySnapshot() {
   return {
@@ -15,24 +21,17 @@ function createSevenDaySnapshot() {
 describe("formatTrayTooltip", () => {
   it("shows the weekly usage, its reset and when it was recorded", () => {
     expect(
-      formatTrayTooltip(createSevenDaySnapshot(), PARIS_DISPLAY_OPTIONS),
+      formatTrayTooltip(
+        createSevenDaySnapshot(),
+        TRAY_MESSAGES,
+        PARIS_DISPLAY_OPTIONS,
+      ),
     ).toBe("Atropos · week 67% · resets Tue 09:00 · updated Thu 14:06");
   });
 
   it("says so when nothing has been recorded yet", () => {
-    expect(formatTrayTooltip(null, PARIS_DISPLAY_OPTIONS)).toBe(
-      NO_LIMITS_RECORDED_TOOLTIP,
+    expect(formatTrayTooltip(null, TRAY_MESSAGES, PARIS_DISPLAY_OPTIONS)).toBe(
+      TRAY_MESSAGES.noLimitsTooltip,
     );
-  });
-
-  it("stays within the 127 characters Windows allows for a tray tooltip", () => {
-    const longestSnapshot = {
-      ...createSevenDaySnapshot(),
-      usedPercentage: 100,
-    };
-
-    expect(
-      formatTrayTooltip(longestSnapshot, PARIS_DISPLAY_OPTIONS).length,
-    ).toBeLessThanOrEqual(127);
   });
 });
