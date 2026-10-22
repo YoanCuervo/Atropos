@@ -1,7 +1,10 @@
 const GAUGE_LOW_PERCENTAGE = 50;
 const GAUGE_HIGH_PERCENTAGE = 80;
 
+import { fillMessageTemplate } from "../../../core/message-template.js";
+
 /** @typedef {import("../../../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
+/** @typedef {import("../../../shared/locales/index.js").Messages} Messages */
 
 /**
  * One usage limit: its title, how much is used, and when it resets.
@@ -12,8 +15,15 @@ const GAUGE_HIGH_PERCENTAGE = 80;
  * @param {string} props.title e.g. "Session (5 hours)".
  * @param {LimitSnapshot | null} props.limitSnapshot Latest snapshot of the window, or `null` when none exists.
  * @param {string} props.resetText Reset time as displayed, e.g. "at 22:40" or "Thu 09:00".
+ * @param {Messages["gauge"]} props.gaugeMessages Texts of the chosen language.
  */
-function LimitGauge({ gaugeId, title, limitSnapshot, resetText }) {
+function LimitGauge({
+  gaugeId,
+  title,
+  limitSnapshot,
+  resetText,
+  gaugeMessages,
+}) {
   const titleId = `${gaugeId}-title`;
   const meterId = `${gaugeId}-meter`;
 
@@ -23,12 +33,15 @@ function LimitGauge({ gaugeId, title, limitSnapshot, resetText }) {
         <h2 id={titleId} className="limit-gauge__title">
           {title}
         </h2>
-        <p className="limit-gauge__missing">No data for this limit yet.</p>
+        <p className="limit-gauge__missing">{gaugeMessages.missing}</p>
       </section>
     );
   }
 
   const roundedPercentage = Math.round(limitSnapshot.usedPercentage);
+  const usedPercentageText = fillMessageTemplate(gaugeMessages.used, {
+    percentage: roundedPercentage,
+  });
 
   return (
     <section className="limit-gauge" aria-labelledby={titleId}>
@@ -36,7 +49,7 @@ function LimitGauge({ gaugeId, title, limitSnapshot, resetText }) {
         {title}
       </h2>
       <label className="limit-gauge__percentage" htmlFor={meterId}>
-        {roundedPercentage}% used
+        {usedPercentageText}
       </label>
       <meter
         id={meterId}
@@ -48,10 +61,11 @@ function LimitGauge({ gaugeId, title, limitSnapshot, resetText }) {
         optimum={0}
         value={Math.min(limitSnapshot.usedPercentage, 100)}
       >
-        {roundedPercentage}%
+        {usedPercentageText}
       </meter>
       <p className="limit-gauge__reset">
-        Resets <time dateTime={limitSnapshot.resetsAt}>{resetText}</time>
+        {gaugeMessages.resetsPrefix}{" "}
+        <time dateTime={limitSnapshot.resetsAt}>{resetText}</time>
       </p>
     </section>
   );

@@ -2,26 +2,33 @@ import {
   formatClockTime,
   formatWeekdayAndClockTime,
 } from "../../../core/date-display.js";
+import { fillMessageTemplate } from "../../../core/message-template.js";
 import LimitGauge from "../components/LimitGauge.jsx";
 import { useLimitsOverview } from "../hooks/useLimitsOverview.js";
 
 /** @typedef {import("../../../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
+/** @typedef {import("../../../shared/locales/index.js").Messages} Messages */
 
-const DATE_DISPLAY_OPTIONS = {
-  locale: "en-GB",
-  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-};
+const TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 /**
  * The current state of both usage limits, kept up to date by the main process.
+ *
+ * @param {object} props
+ * @param {Messages} props.messages Texts of the chosen language.
  */
-function LimitsView() {
+function LimitsView({ messages }) {
   const { status, limitsOverview, reloadLimitsOverview } = useLimitsOverview();
+  const limitsMessages = messages.limits;
+  const dateDisplayOptions = {
+    locale: messages.dateLocale,
+    timeZone: TIME_ZONE,
+  };
 
   if (status === "loading") {
     return (
       <p className="limits-view__message" role="status">
-        Loading limits…
+        {limitsMessages.loading}
       </p>
     );
   }
@@ -29,13 +36,13 @@ function LimitsView() {
   if (status === "error") {
     return (
       <div className="limits-view__message" role="alert">
-        <p>Atropos could not read the limits.</p>
+        <p>{limitsMessages.loadError}</p>
         <button
           type="button"
           className="limits-view__button"
           onClick={reloadLimitsOverview}
         >
-          Try again
+          {limitsMessages.retry}
         </button>
       </div>
     );
@@ -44,11 +51,8 @@ function LimitsView() {
   if (status === "empty") {
     return (
       <section className="limits-view__message" aria-labelledby="empty-title">
-        <h2 id="empty-title">No limits recorded yet</h2>
-        <p>
-          Limits are recorded by the Claude Code status line. Open Claude Code
-          in a terminal and send a message: they appear here within six minutes.
-        </p>
+        <h2 id="empty-title">{limitsMessages.emptyTitle}</h2>
+        <p>{limitsMessages.emptyText}</p>
       </section>
     );
   }
@@ -61,34 +65,41 @@ function LimitsView() {
       <div className="limits-view__gauges">
         <LimitGauge
           gaugeId="five-hour"
-          title="Session (5 hours)"
+          title={limitsMessages.fiveHourTitle}
           limitSnapshot={fiveHour}
           resetText={
             fiveHour === null
               ? ""
-              : `at ${formatClockTime(Date.parse(fiveHour.resetsAt), DATE_DISPLAY_OPTIONS)}`
+              : fillMessageTemplate(limitsMessages.fiveHourReset, {
+                  time: formatClockTime(
+                    Date.parse(fiveHour.resetsAt),
+                    dateDisplayOptions,
+                  ),
+                })
           }
+          gaugeMessages={messages.gauge}
         />
         <LimitGauge
           gaugeId="seven-day"
-          title="Week"
+          title={limitsMessages.sevenDayTitle}
           limitSnapshot={sevenDay}
           resetText={
             sevenDay === null
               ? ""
               : formatWeekdayAndClockTime(
                   Date.parse(sevenDay.resetsAt),
-                  DATE_DISPLAY_OPTIONS,
+                  dateDisplayOptions,
                 )
           }
+          gaugeMessages={messages.gauge}
         />
       </div>
       <p className="limits-view__updated">
-        Updated{" "}
+        {limitsMessages.updatedPrefix}{" "}
         <time dateTime={latestSnapshot.slotStartedAt}>
           {formatWeekdayAndClockTime(
             Date.parse(latestSnapshot.slotStartedAt),
-            DATE_DISPLAY_OPTIONS,
+            dateDisplayOptions,
           )}
         </time>
       </p>
