@@ -2,11 +2,17 @@ import { app } from "electron";
 import { join } from "path";
 
 /**
- * Locates the status line script that Claude Code should run.
- * While developing it is the script of the repository; shipping it with the installer is part of packaging.
+ * The command Claude Code runs for the status line. Once installed, it is the launcher
+ * shipped next to the app, which runs the bundled script with the Node.js built into
+ * Atropos.exe. While developing, it is the script of the repository, run by Node.js.
  *
- * @returns {string}
+ * @returns {string[]} Program then arguments.
  */
-export function resolveStatusLineScriptPath() {
-  return join(app.getAppPath(), "src", "statusline", "index.js");
+export function resolveStatusLineCommandParts() {
+  if (app.isPackaged) {
+    return [
+      join(process.resourcesPath, "statusline", "atropos-statusline.cmd"),
+    ];
+  }
+  return ["node", join(app.getAppPath(), "src", "statusline", "index.js")];
 }

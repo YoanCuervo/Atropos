@@ -23,7 +23,7 @@ import {
 import { createMainWindow, showMainWindow } from "./main-window.js";
 import { createSettingsStore } from "./settings-store.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
-import { resolveStatusLineScriptPath } from "./status-line-script.js";
+import { resolveStatusLineCommandParts } from "./status-line-script.js";
 import { createApplicationTray } from "./tray.js";
 import { notifyWeeklyUsageIfNeeded } from "./weekly-alert.js";
 
@@ -179,7 +179,7 @@ async function startApplication() {
       return isHistoryCleared;
     },
     readStatusLineSettings: () =>
-      formatStatusLineSettings(resolveStatusLineScriptPath()),
+      formatStatusLineSettings(resolveStatusLineCommandParts()),
   });
   const mainWindow = createMainWindow();
   slotScheduler = startSlotScheduler(() =>
