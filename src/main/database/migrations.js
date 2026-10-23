@@ -11,6 +11,14 @@ export const MIGRATIONS = [
     resets_at        TEXT    NOT NULL,
     UNIQUE (window_kind, slot_started_at)
   );`,
+  `CREATE TABLE sent_alerts (
+    id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+    window_kind           TEXT    NOT NULL CHECK (window_kind IN ('five_hour', 'seven_day')),
+    threshold_percentage  INTEGER NOT NULL,
+    window_resets_at      TEXT    NOT NULL,
+    sent_at               TEXT    NOT NULL,
+    UNIQUE (window_kind, threshold_percentage, window_resets_at)
+  );`,
 ];
 
 /**

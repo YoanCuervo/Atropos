@@ -12,6 +12,7 @@ import { formatTrayTooltip } from "../core/tray-text.js";
 import { getMessages } from "../shared/locales/index.js";
 import { createLimitSnapshotsRepository } from "./database/limit-snapshots-repository.js";
 import { openDatabase } from "./database/open-database.js";
+import { createSentAlertsRepository } from "./database/sent-alerts-repository.js";
 import { confirmThenClearHistory } from "./history-clearing.js";
 import { maintainHistory } from "./history-maintenance.js";
 import {
@@ -24,6 +25,7 @@ import { createSettingsStore } from "./settings-store.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
 import { resolveStatusLineScriptPath } from "./status-line-script.js";
 import { createApplicationTray } from "./tray.js";
+import { notifyWeeklyUsageIfNeeded } from "./weekly-alert.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
 const DATABASE_FILE_NAME = "atropos.db";
@@ -34,6 +36,8 @@ app.setPath(
 );
 
 /** @typedef {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} LimitSnapshotsRepository */
+/** @typedef {import("./database/sent-alerts-repository.js").SentAlertsRepository} SentAlertsRepository */
+/** @typedef {import("../core/snapshot-journal.js").LimitSnapshot} LimitSnapshot */
 /** @typedef {import("./ipc-handlers.js").LimitsOverview} LimitsOverview */
 /** @typedef {import("./settings-store.js").SettingsStore} SettingsStore */
 /** @typedef {import("./tray.js").ApplicationTray} ApplicationTray */
@@ -44,6 +48,8 @@ app.setPath(
  * @property {ApplicationTray} applicationTray
  * @property {import("electron").BrowserWindow} mainWindow
  * @property {SettingsStore} settingsStore
+ * @property {SentAlertsRepository} sentAlertsRepository
+ * @property {(sevenDaySnapshot: LimitSnapshot | null) => void} notifyWeeklyUsage
  */
 
 /**
@@ -80,8 +86,8 @@ function applySettings(settings, applicationTray, limitSnapshotsRepository) {
 }
 
 /**
- * Imports the journal and purges old snapshots, then shows the latest limits
- * in the tray tooltip and sends them to the interface.
+ * Imports the journal and purges old data, then shows the latest limits
+ * in the tray tooltip, sends them to the interface and alerts when the weekly threshold is reached.
  *
  * @param {LimitSnapshotsRepository} limitSnapshotsRepository
  * @param {RefreshTargets} refreshTargets
@@ -89,17 +95,25 @@ function applySettings(settings, applicationTray, limitSnapshotsRepository) {
  */
 async function refreshHistory(
   limitSnapshotsRepository,
-  { applicationTray, mainWindow, settingsStore },
+  {
+    applicationTray,
+    mainWindow,
+    settingsStore,
+    sentAlertsRepository,
+    notifyWeeklyUsage,
+  },
 ) {
   await maintainHistory({
     journalPath: buildJournalPath(app.getPath("appData")),
     limitSnapshotsRepository,
+    sentAlertsRepository,
     nowMs: Date.now(),
   });
 
   const limitsOverview = readLimitsOverview(limitSnapshotsRepository);
   showTrayTooltip(applicationTray, limitsOverview, settingsStore.getSettings());
   sendLimitsUpdate(mainWindow, limitsOverview);
+  notifyWeeklyUsage(limitsOverview.sevenDay);
 }
 
 async function startApplication() {
@@ -113,9 +127,18 @@ async function startApplication() {
     join(app.getPath("userData"), DATABASE_FILE_NAME),
   );
   const limitSnapshotsRepository = createLimitSnapshotsRepository(database);
+  const sentAlertsRepository = createSentAlertsRepository(database);
   const settingsStore = createSettingsStore(
     buildSettingsPath(app.getPath("appData")),
   );
+  const notifyWeeklyUsage = (sevenDaySnapshot) =>
+    notifyWeeklyUsageIfNeeded({
+      sevenDaySnapshot,
+      settings: settingsStore.getSettings(),
+      sentAlertsRepository,
+      nowMs: Date.now(),
+      onNotificationClicked: () => showMainWindow(mainWindow),
+    });
 
   let slotScheduler;
   const applicationTray = createApplicationTray(trayIconPath, {
@@ -131,14 +154,17 @@ async function startApplication() {
   registerIpcHandlers({
     limitSnapshotsRepository,
     settingsStore,
-    onSettingsChanged: (settings) =>
-      applySettings(settings, applicationTray, limitSnapshotsRepository),
+    onSettingsChanged: (settings) => {
+      applySettings(settings, applicationTray, limitSnapshotsRepository);
+      notifyWeeklyUsage(readLimitsOverview(limitSnapshotsRepository).sevenDay);
+    },
     clearHistory: async () => {
       const isHistoryCleared = await confirmThenClearHistory({
         parentWindow: mainWindow,
         clearDialogMessages: getMessages(settingsStore.getSettings().language)
           .clearDialog,
         limitSnapshotsRepository,
+        sentAlertsRepository,
         journalPath: buildJournalPath(app.getPath("appData")),
       });
       if (isHistoryCleared) {
@@ -161,6 +187,8 @@ async function startApplication() {
       applicationTray,
       mainWindow,
       settingsStore,
+      sentAlertsRepository,
+      notifyWeeklyUsage,
     }),
   );
 
