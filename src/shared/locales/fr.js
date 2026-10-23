@@ -39,6 +39,7 @@ export default {
     label: "Vues",
     limits: "Limites",
     history: "Historique",
+    settings: "Réglages",
   },
   history: {
     title: "Historique",
@@ -73,6 +74,53 @@ export default {
     pointsMore: "{points} points de plus",
     onePointMore: "1 point de plus",
     same: "Identique à la semaine dernière",
+  },
+  settings: {
+    title: "Réglages",
+  },
+  alertSettings: {
+    title: "Alerte hebdomadaire",
+    enabledLabel:
+      "Me prévenir quand l’utilisation hebdomadaire atteint le seuil",
+    thresholdLabel: "Seuil (%)",
+    thresholdHint:
+      "Un nombre entier de {min} à {max}. Une notification par semaine au plus.",
+    invalidThreshold: "Saisissez un nombre entier de {min} à {max}.",
+  },
+  historyClearing: {
+    title: "Historique",
+    explanation:
+      "Atropos conserve les relevés des 12 derniers mois sur cet ordinateur uniquement. L’effacement les supprime tous, y compris ceux en attente d’import.",
+    button: "Effacer l’historique",
+    cleared: "Historique effacé.",
+    failed: "L’historique n’a pas pu être effacé.",
+  },
+  statusLineSetup: {
+    title: "Barre d’état",
+    explanation:
+      "Atropos relève vos limites grâce à la barre d’état de Claude Code. Atropos ne modifie jamais vos réglages de Claude Code : c’est vous qui ajoutez la barre d’état.",
+    stepOpen:
+      "Ouvrez le fichier de réglages de Claude Code, ~/.claude/settings.json.",
+    stepPaste:
+      "Ajoutez le bloc ci-dessous au premier niveau du fichier, puis enregistrez-le.",
+    stepUse:
+      "Utilisez Claude Code dans un terminal, connecté avec un abonnement Pro ou Max. Les limites apparaissent ici en moins de six minutes.",
+    desktopNote:
+      "Seul Claude Code en terminal lance la barre d’état : l’application de bureau ne relève pas les limites.",
+    codeLabel: "Bloc à ajouter à ~/.claude/settings.json",
+    copyButton: "Copier",
+    copied: "Copié.",
+    copyFailed:
+      "La copie a échoué : sélectionnez le bloc et copiez-le à la main.",
+    loadError: "Atropos n’a pas pu préparer le bloc.",
+  },
+  clearDialog: {
+    title: "Effacer l’historique",
+    message: "Supprimer toutes les limites relevées ?",
+    detail:
+      "Tous les relevés conservés par Atropos sur cet ordinateur sont supprimés. Cette action est définitive.",
+    cancel: "Annuler",
+    confirm: "Effacer l’historique",
   },
   tray: {
     open: "Ouvrir Atropos",

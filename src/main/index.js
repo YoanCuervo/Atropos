@@ -7,10 +7,12 @@ import {
   buildJournalPath,
 } from "../core/journal-location.js";
 import { buildSettingsPath } from "../core/settings-location.js";
+import { formatStatusLineSettings } from "../core/status-line-setup.js";
 import { formatTrayTooltip } from "../core/tray-text.js";
 import { getMessages } from "../shared/locales/index.js";
 import { createLimitSnapshotsRepository } from "./database/limit-snapshots-repository.js";
 import { openDatabase } from "./database/open-database.js";
+import { confirmThenClearHistory } from "./history-clearing.js";
 import { maintainHistory } from "./history-maintenance.js";
 import {
   readLimitsOverview,
@@ -20,6 +22,7 @@ import {
 import { createMainWindow, showMainWindow } from "./main-window.js";
 import { createSettingsStore } from "./settings-store.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
+import { resolveStatusLineScriptPath } from "./status-line-script.js";
 import { createApplicationTray } from "./tray.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
@@ -130,6 +133,27 @@ async function startApplication() {
     settingsStore,
     onSettingsChanged: (settings) =>
       applySettings(settings, applicationTray, limitSnapshotsRepository),
+    clearHistory: async () => {
+      const isHistoryCleared = await confirmThenClearHistory({
+        parentWindow: mainWindow,
+        clearDialogMessages: getMessages(settingsStore.getSettings().language)
+          .clearDialog,
+        limitSnapshotsRepository,
+        journalPath: buildJournalPath(app.getPath("appData")),
+      });
+      if (isHistoryCleared) {
+        const limitsOverview = readLimitsOverview(limitSnapshotsRepository);
+        showTrayTooltip(
+          applicationTray,
+          limitsOverview,
+          settingsStore.getSettings(),
+        );
+        sendLimitsUpdate(mainWindow, limitsOverview);
+      }
+      return isHistoryCleared;
+    },
+    readStatusLineSettings: () =>
+      formatStatusLineSettings(resolveStatusLineScriptPath()),
   });
   const mainWindow = createMainWindow();
   slotScheduler = startSlotScheduler(() =>

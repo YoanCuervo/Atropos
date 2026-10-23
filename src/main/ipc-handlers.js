@@ -46,11 +46,15 @@ export function readLimitsOverview(limitSnapshotsRepository) {
  * @param {LimitSnapshotsRepository} ipcDependencies.limitSnapshotsRepository
  * @param {SettingsStore} ipcDependencies.settingsStore
  * @param {(settings: Settings) => void} ipcDependencies.onSettingsChanged Applies the new settings outside the interface: theme, tray texts.
+ * @param {() => Promise<boolean>} ipcDependencies.clearHistory Asks for confirmation, then clears; resolves to whether it did.
+ * @param {() => string} ipcDependencies.readStatusLineSettings The `statusLine` block to paste into Claude Code settings.
  */
 export function registerIpcHandlers({
   limitSnapshotsRepository,
   settingsStore,
   onSettingsChanged,
+  clearHistory,
+  readStatusLineSettings,
 }) {
   handleTrustedRequests(IPC_CHANNELS.getLimitsOverview, () =>
     readLimitsOverview(limitSnapshotsRepository),
@@ -80,6 +84,12 @@ export function registerIpcHandlers({
     onSettingsChanged(settings);
     return settings;
   });
+
+  handleTrustedRequests(IPC_CHANNELS.clearHistory, () => clearHistory());
+
+  handleTrustedRequests(IPC_CHANNELS.getStatusLineSettings, () =>
+    readStatusLineSettings(),
+  );
 }
 
 /**

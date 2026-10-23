@@ -36,6 +36,19 @@ const atroposApi = {
     ipcRenderer.invoke(IPC_CHANNELS.updateSettings, settingsChange),
 
   /**
+   * Opens a native confirmation dialog; nothing is deleted unless the user confirms there.
+   *
+   * @returns {Promise<boolean>} Whether the history was cleared.
+   */
+  clearHistory: () => ipcRenderer.invoke(IPC_CHANNELS.clearHistory),
+
+  /**
+   * @returns {Promise<string>} The `statusLine` block to paste into `~/.claude/settings.json`.
+   */
+  getStatusLineSettings: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.getStatusLineSettings),
+
+  /**
    * @param {(limitsOverview: LimitsOverview) => void} handleLimitsUpdate
    * @returns {() => void} Stops listening.
    */
