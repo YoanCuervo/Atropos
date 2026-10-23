@@ -159,6 +159,7 @@ CREATE TABLE IF NOT EXISTS sent_alerts (
 - HTML sémantique : `header`, `main`, `section` avec un titre, `<meter>` pour chaque jauge et `<time datetime>` pour chaque date. Pas de soupe de `div`.
 - CSS : classes nommées en BEM (`limit-gauge__label`), couleurs et espacements en variables CSS, un jeu de valeurs pour le clair et un pour le sombre.
 - Commentaires : autorisés pendant le développement. Ceux qui expliquent le code sont supprimés avant la fusion finale dans `main`. La JSDoc est conservée.
+- Charte graphique (palette, deux thèmes, composants, logo) : voir [style-guide.md](style-guide.md).
 
 ## 9. Sécurité
 
@@ -209,6 +210,7 @@ Ces principes sont permanents, indépendamment du risque légal.
 
 - **Lancement du script de barre d'état sur une machine sans Node :** deux pistes, Node installé ou l'exécutable d'Atropos lancé avec `ELECTRON_RUN_AS_NODE=1`. À trancher pendant la tâche d'empaquetage.
 - **Construction du script de barre d'état :** il doit être livré avec les fichiers de `core/` dont il dépend.
+- **Carte « Le fil » :** date d'épuisement de la limite hebdomadaire au rythme actuel. Reportée en V1.1, voir [style-guide.md](style-guide.md).
 
 ## 13. Découpage de la V1
 
@@ -230,8 +232,10 @@ Une tâche correspond à une session et à une branche `feature/*` partie de `de
 | 11  | Vue réglages : langue, thème, alerte, effacement de l'historique, aide à l'activation de la barre d'état                                   | `feature/settings-view`       |
 | 12  | Alerte hebdo : décision dans `core/`, notification, table `sent_alerts`                                                                    | `feature/weekly-alert`        |
 | 13  | Empaquetage : electron-builder, livraison de la barre d'état, test de l'installateur                                                       | `feature/packaging`           |
-| 14  | Workflow de publication GitHub Actions et première publication                                                                             | `feature/release-workflow`    |
-| 15  | README : captures, GIF, schéma, section « Privacy »                                                                                        | `feature/readme`              |
-| 16  | Audit `/conform-rgaa`, puis corrections                                                                                                    | `feature/accessibility-audit` |
-| 17  | Audit `/conform-cnil`, puis corrections                                                                                                    | `feature/privacy-audit`       |
-| 18  | Suppression des commentaires qui expliquent le code, fusion de `dev` dans `main`, tag `v1.0.0`                                             | —                             |
+| 14  | Identité visuelle : jetons des deux thèmes, logo, icônes de l'app et de la zone de notification, police des titres                         | `feature/visual-identity`     |
+| 15  | Refonte de l'interface : barre latérale, grille de cartes, composants des trois vues                                                       | `feature/ui-redesign`         |
+| 16  | Workflow de publication GitHub Actions et première publication                                                                             | `feature/release-workflow`    |
+| 17  | README : captures, GIF, schéma, section « Privacy »                                                                                        | `feature/readme`              |
+| 18  | Audit `/conform-rgaa`, puis corrections                                                                                                    | `feature/accessibility-audit` |
+| 19  | Audit `/conform-cnil`, puis corrections                                                                                                    | `feature/privacy-audit`       |
+| 20  | Suppression des commentaires qui expliquent le code, fusion de `dev` dans `main`, tag `v1.0.0`                                             | —                             |
