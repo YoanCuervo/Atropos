@@ -3,15 +3,17 @@ productName: Atropos
 directories:
   buildResources: build
 files:
-  - "!**/.vscode/*"
-  - "!src/*"
-  - "!docs/*"
-  - "!electron.vite.config.{js,ts,mjs,cjs}"
-  - "!vitest.config.{js,mjs}"
-  - "!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,.prettierrc.json,.editorconfig,CHANGELOG.md,README.md}"
-  - "!{.env,.env.*,.npmrc}"
+  - out/**
+  - "!out/statusline/**"
+  - resources/**
+  - package.json
 asarUnpack:
   - "resources/**"
+extraResources:
+  - from: out/statusline/index.mjs
+    to: statusline/index.mjs
+  - from: src/statusline/atropos-statusline.cmd
+    to: statusline/atropos-statusline.cmd
 win:
   executableName: Atropos
 nsis:
