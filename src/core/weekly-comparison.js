@@ -1,3 +1,5 @@
+import { computeWindowResetMs } from "./limit-window.js";
+
 /** @typedef {import("./snapshot-journal.js").LimitSnapshot} LimitSnapshot */
 
 /**
@@ -7,8 +9,7 @@
  * @property {number | null} previousLastPercentage Last usage recorded in the previous week, or `null` without snapshots.
  */
 
-const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
-const MILLISECONDS_PER_WEEK = 7 * 24 * MILLISECONDS_PER_HOUR;
+const MILLISECONDS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
 /**
  * Compares the current weekly window with the previous one, at the same point of the window.
@@ -44,18 +45,4 @@ export function compareWithPreviousWeek(sevenDaySnapshots) {
     previousLastPercentage:
       previousWindowSnapshots.at(-1)?.usedPercentage ?? null,
   };
-}
-
-/**
- * Identifies the weekly window of a snapshot by its reset time, rounded to the hour
- * so that small variations between snapshots of one window do not split it.
- *
- * @param {LimitSnapshot} limitSnapshot
- * @returns {number}
- */
-function computeWindowResetMs(limitSnapshot) {
-  return (
-    Math.round(Date.parse(limitSnapshot.resetsAt) / MILLISECONDS_PER_HOUR) *
-    MILLISECONDS_PER_HOUR
-  );
 }
