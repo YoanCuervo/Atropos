@@ -122,6 +122,10 @@ export default {
     cancel: "Annuler",
     confirm: "Effacer l’historique",
   },
+  weeklyAlert: {
+    title: "Atropos · limite hebdomadaire",
+    body: "Vous avez utilisé {percentage}\u00a0% de votre limite hebdomadaire. Réinitialisation {resetTime}.",
+  },
   tray: {
     open: "Ouvrir Atropos",
     refresh: "Actualiser",

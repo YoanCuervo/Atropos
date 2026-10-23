@@ -120,6 +120,10 @@ export default {
     cancel: "Cancel",
     confirm: "Clear history",
   },
+  weeklyAlert: {
+    title: "Atropos · weekly limit",
+    body: "{percentage}% of your weekly limit is used. It resets {resetTime}.",
+  },
   tray: {
     open: "Open Atropos",
     refresh: "Refresh now",
