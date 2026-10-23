@@ -1,8 +1,8 @@
 /** @typedef {import("../../../shared/locales/index.js").Messages} Messages */
-/** @typedef {"limits" | "history"} ViewName */
+/** @typedef {"limits" | "history" | "settings"} ViewName */
 
 /** @type {readonly ViewName[]} */
-const VIEW_NAMES = Object.freeze(["limits", "history"]);
+const VIEW_NAMES = Object.freeze(["limits", "history", "settings"]);
 
 /**
  * Switches between the views of the window. The current one is marked for assistive technologies too.

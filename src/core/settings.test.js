@@ -9,7 +9,19 @@ import {
 
 describe("readStoredSettings", () => {
   it("reads valid settings", () => {
+    const storedSettings = {
+      language: "fr",
+      theme: "dark",
+      isWeeklyAlertEnabled: false,
+      weeklyAlertThresholdPercentage: 65,
+    };
+
+    expect(readStoredSettings(storedSettings)).toEqual(storedSettings);
+  });
+
+  it("reads a file written before the alert settings existed", () => {
     expect(readStoredSettings({ language: "fr", theme: "dark" })).toEqual({
+      ...DEFAULT_SETTINGS,
       language: "fr",
       theme: "dark",
     });
@@ -24,16 +36,25 @@ describe("readStoredSettings", () => {
   });
 
   it("replaces only the invalid settings with their defaults", () => {
-    expect(readStoredSettings({ language: "de", theme: "light" })).toEqual({
+    expect(
+      readStoredSettings({
+        language: "de",
+        theme: "light",
+        isWeeklyAlertEnabled: "yes",
+        weeklyAlertThresholdPercentage: 70,
+      }),
+    ).toEqual({
       language: "en",
       theme: "light",
+      isWeeklyAlertEnabled: true,
+      weeklyAlertThresholdPercentage: 70,
     });
   });
 
   it("drops unknown settings", () => {
-    expect(
-      readStoredSettings({ language: "fr", theme: "dark", sessionId: "x" }),
-    ).toEqual({ language: "fr", theme: "dark" });
+    expect(readStoredSettings({ ...DEFAULT_SETTINGS, sessionId: "x" })).toEqual(
+      DEFAULT_SETTINGS,
+    );
   });
 });
 
@@ -43,6 +64,17 @@ describe("parseSettingsChange", () => {
       theme: "light",
     });
   });
+
+  it.each([10, 80, 100])(
+    "accepts a threshold of %i%",
+    (thresholdPercentage) => {
+      expect(
+        parseSettingsChange({
+          weeklyAlertThresholdPercentage: thresholdPercentage,
+        }),
+      ).toEqual({ weeklyAlertThresholdPercentage: thresholdPercentage });
+    },
+  );
 
   it("accepts a change of both settings", () => {
     expect(parseSettingsChange({ language: "fr", theme: "system" })).toEqual({
@@ -58,6 +90,31 @@ describe("parseSettingsChange", () => {
     ["an inherited property name", { toString: "en" }, "toString"],
     ["an unsupported language", { language: "de" }, "language"],
     ["an unsupported theme", { theme: "sepia" }, "theme"],
+    [
+      "an alert switch that is not a boolean",
+      { isWeeklyAlertEnabled: 1 },
+      "isWeeklyAlertEnabled",
+    ],
+    [
+      "a threshold below the minimum",
+      { weeklyAlertThresholdPercentage: 5 },
+      "weeklyAlertThresholdPercentage",
+    ],
+    [
+      "a threshold above 100",
+      { weeklyAlertThresholdPercentage: 150 },
+      "weeklyAlertThresholdPercentage",
+    ],
+    [
+      "a threshold that is not whole",
+      { weeklyAlertThresholdPercentage: 80.5 },
+      "weeklyAlertThresholdPercentage",
+    ],
+    [
+      "a threshold written as text",
+      { weeklyAlertThresholdPercentage: "80" },
+      "weeklyAlertThresholdPercentage",
+    ],
   ])("refuses %s", (_case, rawChange, expectedFieldPath) => {
     expect(() => parseSettingsChange(rawChange)).toThrow(
       expect.objectContaining({

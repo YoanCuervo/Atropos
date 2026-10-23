@@ -1,4 +1,4 @@
-import { readFile, rename, stat, unlink } from "node:fs/promises";
+import { readFile, rename, rm, stat, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { parseReadableJournalLines } from "../core/snapshot-journal.js";
 
@@ -43,6 +43,20 @@ export async function importJournal(journalPath, limitSnapshotsRepository) {
   }
 
   return importedSnapshotCount;
+}
+
+/**
+ * Deletes the journal and any file left by an interrupted import, so cleared snapshots never come back.
+ *
+ * @param {string} journalPath
+ * @returns {Promise<void>}
+ */
+export async function discardJournalFiles(journalPath) {
+  await Promise.all(
+    [journalPath, join(dirname(journalPath), IMPORTING_JOURNAL_FILE_NAME)].map(
+      (filePath) => rm(filePath, { force: true }),
+    ),
+  );
 }
 
 /**
