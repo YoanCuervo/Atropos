@@ -8,12 +8,16 @@ import { isPlainObject } from "./validation.js";
  * @typedef {object} Settings
  * @property {Language} language Language of the interface, the tray tooltip and the tray menu.
  * @property {Theme} theme "system" follows the Windows setting.
+ * @property {boolean} isWeeklyAlertEnabled Whether a notification is sent when the weekly usage reaches the threshold.
+ * @property {number} weeklyAlertThresholdPercentage Whole percentage, from `MIN_ALERT_THRESHOLD_PERCENTAGE` to 100.
  */
 
 /**
  * @typedef {object} SettingsChange
  * @property {Language} [language]
  * @property {Theme} [theme]
+ * @property {boolean} [isWeeklyAlertEnabled]
+ * @property {number} [weeklyAlertThresholdPercentage]
  */
 
 /** @type {readonly Language[]} */
@@ -22,16 +26,37 @@ export const LANGUAGES = Object.freeze(["en", "fr"]);
 /** @type {readonly Theme[]} */
 export const THEMES = Object.freeze(["system", "light", "dark"]);
 
+export const MIN_ALERT_THRESHOLD_PERCENTAGE = 10;
+export const MAX_ALERT_THRESHOLD_PERCENTAGE = 100;
+
 /** @type {Readonly<Settings>} */
 export const DEFAULT_SETTINGS = Object.freeze({
   language: "en",
   theme: "system",
+  isWeeklyAlertEnabled: true,
+  weeklyAlertThresholdPercentage: 80,
 });
 
-const ALLOWED_VALUES_BY_SETTING = Object.freeze({
-  language: LANGUAGES,
-  theme: THEMES,
+/** @type {Readonly<Record<keyof Settings, (value: unknown) => boolean>>} */
+const IS_VALID_VALUE_BY_SETTING = Object.freeze({
+  language: (value) => LANGUAGES.includes(value),
+  theme: (value) => THEMES.includes(value),
+  isWeeklyAlertEnabled: (value) => typeof value === "boolean",
+  weeklyAlertThresholdPercentage: (value) =>
+    isValidAlertThresholdPercentage(value),
 });
+
+/**
+ * @param {unknown} value
+ * @returns {value is number} Whether the value is a whole percentage from `MIN_ALERT_THRESHOLD_PERCENTAGE` to 100.
+ */
+export function isValidAlertThresholdPercentage(value) {
+  return (
+    Number.isInteger(value) &&
+    value >= MIN_ALERT_THRESHOLD_PERCENTAGE &&
+    value <= MAX_ALERT_THRESHOLD_PERCENTAGE
+  );
+}
 
 /**
  * Reads the settings found in `settings.json`. The file may have been edited by hand,
@@ -44,10 +69,10 @@ export function readStoredSettings(storedSettings) {
   const storedValues = isPlainObject(storedSettings) ? storedSettings : {};
 
   return Object.fromEntries(
-    Object.entries(ALLOWED_VALUES_BY_SETTING).map(
-      ([settingName, allowedValues]) => [
+    Object.entries(IS_VALID_VALUE_BY_SETTING).map(
+      ([settingName, isValidValue]) => [
         settingName,
-        allowedValues.includes(storedValues[settingName])
+        isValidValue(storedValues[settingName])
           ? storedValues[settingName]
           : DEFAULT_SETTINGS[settingName],
       ],
@@ -68,10 +93,11 @@ export function parseSettingsChange(rawChange) {
   }
 
   for (const [settingName, value] of Object.entries(rawChange)) {
-    const allowedValues = Object.hasOwn(ALLOWED_VALUES_BY_SETTING, settingName)
-      ? ALLOWED_VALUES_BY_SETTING[settingName]
-      : [];
-    if (!allowedValues.includes(value)) {
+    const isKnownSetting = Object.hasOwn(
+      IS_VALID_VALUE_BY_SETTING,
+      settingName,
+    );
+    if (!isKnownSetting || !IS_VALID_VALUE_BY_SETTING[settingName](value)) {
       throw new InvalidSettingsChangeError(settingName, value);
     }
   }
