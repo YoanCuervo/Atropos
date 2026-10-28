@@ -18,7 +18,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/limits-dark.png">
-  <img src="docs/images/limits-light.png" alt="The Atropos window: the weekly limit at 62 % with its reset time and pace margin, and the 5-hour session limit as a ring.">
+  <img src="docs/images/limits-light.png" alt="The Atropos window: the weekly limit at 76 % used with its pace margin and reset time, and the 5-hour session at 40 % as a ring.">
 </picture>
 
 Works with Claude Code. Atropos only reads the limits that Claude Code gives its own extensions. It never reads your Claude credentials and never calls an Anthropic API.
@@ -31,7 +31,7 @@ Works with Claude Code. Atropos only reads the limits that Claude Code gives its
 
 - **Claude Code mod.** A band above the prompt shows the model, the context, the session cost and, for each limit, the share used, the pace margin and the time left. It runs in the terminal and in the Claude desktop app, and records the limits for the app.
 
-  ![The Atropos band above the Claude Code prompt.](docs/images/band.png)
+  ![The Atropos band above the Claude Code prompt: model, context, session cost, then the 5-hour and weekly limits with their pace margin and time left.](docs/images/band.png)
 
 - **Tray icon.** The weekly share used, in a tooltip next to the clock. Left click opens the window.
 - **Current limits.** Gauges for the week and the 5-hour session, with their reset times and how far ahead or behind a steady pace you are.
@@ -42,7 +42,7 @@ Works with Claude Code. Atropos only reads the limits that Claude Code gives its
 - **Weekly alert.** A Windows notification when the weekly limit reaches your threshold, 80 % by default, sent once per weekly window.
 - **Settings.** English or French, System, Light or Dark theme, the alert, clearing the history, and the status line fallback.
 
-  ![The settings view.](docs/images/settings.png)
+  ![The settings view: display, weekly alert, history and About cards.](docs/images/settings.png)
 
 ## Install
 
