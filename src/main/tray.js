@@ -1,6 +1,4 @@
-import { Menu, Tray, nativeImage } from "electron";
-
-const TRAY_ICON_SIZE_PX = 16;
+import { Menu, Tray } from "electron";
 
 /**
  * @typedef {object} TrayActions
@@ -27,7 +25,7 @@ const TRAY_ICON_SIZE_PX = 16;
  * Creates the icon next to the Windows clock: a left click opens the window,
  * a right click opens the menu.
  *
- * @param {string} iconPath
+ * @param {string} iconPath The 16 px icon; Electron loads the @1.25x to @2x files next to it.
  * @param {TrayActions} trayActions
  * @returns {ApplicationTray}
  */
@@ -35,10 +33,7 @@ export function createApplicationTray(
   iconPath,
   { onOpenWindowRequested, onRefreshRequested, onQuitRequested },
 ) {
-  const trayIcon = nativeImage
-    .createFromPath(iconPath)
-    .resize({ width: TRAY_ICON_SIZE_PX, height: TRAY_ICON_SIZE_PX });
-  const tray = new Tray(trayIcon);
+  const tray = new Tray(iconPath);
 
   tray.on("click", onOpenWindowRequested);
 

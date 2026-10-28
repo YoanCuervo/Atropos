@@ -1,7 +1,7 @@
 import { app, nativeTheme } from "electron";
 import { join } from "path";
 import { electronApp, optimizer } from "@electron-toolkit/utils";
-import trayIconPath from "../../resources/icon.png?asset";
+import trayIconPath from "../../resources/tray.png?asset";
 import {
   APPLICATION_DATA_FOLDER_NAME,
   buildJournalPath,
