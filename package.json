@@ -1,6 +1,6 @@
 {
   "name": "atropos",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Live Claude Code usage limits on the Windows desktop.",
   "main": "./out/main/index.js",
