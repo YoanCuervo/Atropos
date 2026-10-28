@@ -121,6 +121,14 @@ export default {
       "La copie a échoué : sélectionnez le bloc et copiez-le à la main.",
     loadError: "Atropos n’a pas pu préparer le bloc.",
   },
+  about: {
+    title: "À propos",
+    versionLabel: "Version",
+    versionUnknown: "Inconnue",
+    releasesLink: "Voir les versions",
+    releasesHint:
+      "Atropos ne cherche jamais de mise à jour tout seul. Comparez votre version à la dernière publiée et téléchargez son installateur si besoin.",
+  },
   clearDialog: {
     title: "Effacer l’historique",
     message: "Supprimer toutes les limites relevées ?",

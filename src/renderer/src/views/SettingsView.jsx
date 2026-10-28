@@ -1,3 +1,4 @@
+import AboutSettings from "../components/AboutSettings.jsx";
 import DisplaySettings from "../components/DisplaySettings.jsx";
 import HistoryClearing from "../components/HistoryClearing.jsx";
 import StatusLineSetup from "../components/StatusLineSetup.jsx";
@@ -8,7 +9,7 @@ import WeeklyAlertSettings from "../components/WeeklyAlertSettings.jsx";
 /** @typedef {import("../../../shared/locales/index.js").Messages} Messages */
 
 /**
- * Display, weekly alert, history clearing and status line setup.
+ * Display, weekly alert, history clearing, status line setup and version.
  *
  * @param {object} props
  * @param {Settings} props.settings
@@ -40,6 +41,7 @@ function SettingsView({ settings, messages, onSettingsChange, hasSaveFailed }) {
         />
         <HistoryClearing clearingMessages={messages.historyClearing} />
         <StatusLineSetup setupMessages={messages.statusLineSetup} />
+        <AboutSettings aboutMessages={messages.about} />
       </div>
     </section>
   );

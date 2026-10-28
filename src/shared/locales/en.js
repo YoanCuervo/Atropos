@@ -119,6 +119,14 @@ export default {
     copyFailed: "Copy failed: select the block and copy it by hand.",
     loadError: "Atropos could not prepare the block.",
   },
+  about: {
+    title: "About",
+    versionLabel: "Version",
+    versionUnknown: "Unknown",
+    releasesLink: "See the releases",
+    releasesHint:
+      "Atropos never checks for updates by itself. Compare your version with the latest release and download its installer if needed.",
+  },
   clearDialog: {
     title: "Clear history",
     message: "Delete all recorded limits?",

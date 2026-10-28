@@ -689,6 +689,22 @@ body {
   background: var(--color-gauge-critical);
 }
 
+.settings-button--link {
+  display: inline-block;
+  margin-top: var(--space-small);
+  text-decoration: none;
+}
+
+.settings-about {
+  margin: 0 0 var(--space-small);
+}
+
+.settings-about__version {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-family-data);
+  font-size: 1.25rem;
+}
+
 .settings-code {
   margin: 0.25rem 0 var(--space-small);
   padding: var(--space-small) var(--space-medium);
