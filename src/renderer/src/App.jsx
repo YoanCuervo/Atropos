@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { findLatestSnapshot } from "../../core/snapshot-journal.js";
 import Sidebar from "./components/Sidebar.jsx";
 import { useLimitsOverview } from "./hooks/useLimitsOverview.js";
@@ -13,6 +13,11 @@ function App() {
   const [currentView, setCurrentView] = useState(
     /** @type {import("./components/Sidebar.jsx").ViewName} */ ("limits"),
   );
+  const currentViewName = messages.navigation[currentView];
+
+  useEffect(() => {
+    document.title = `${currentViewName} – Atropos`;
+  }, [currentViewName]);
 
   if (settings === null) {
     return null;
@@ -26,13 +31,16 @@ function App() {
 
   return (
     <div className="app-layout">
+      <a className="skip-link" href="#main-content">
+        {messages.navigation.skipToContent}
+      </a>
       <Sidebar
         currentView={currentView}
         onViewChange={setCurrentView}
         lastRecordedAt={latestSnapshot?.slotStartedAt ?? null}
         messages={messages}
       />
-      <main className="app-main">
+      <main id="main-content" className="app-main" tabIndex={-1}>
         {currentView === "limits" && (
           <LimitsView
             limitsOverviewState={limitsOverviewState}

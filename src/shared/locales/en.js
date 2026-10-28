@@ -45,6 +45,7 @@ export default {
   },
   navigation: {
     label: "Views",
+    skipToContent: "Skip to content",
     limits: "Limits",
     history: "History",
     settings: "Settings",
@@ -125,7 +126,7 @@ export default {
     title: "About",
     versionLabel: "Version",
     versionUnknown: "Unknown",
-    releasesLink: "See the releases",
+    releasesLink: "See the releases (opens in your browser)",
     releasesHint:
       "Atropos never checks for updates by itself. Compare your version with the latest release and download its installer if needed.",
   },
