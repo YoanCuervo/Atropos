@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { InvalidJournalLineError } from "./errors.js";
 import {
   createLimitSnapshots,
+  findLatestSnapshot,
   formatJournalLine,
   parseJournalLine,
   parseReadableJournalLines,
@@ -191,5 +192,38 @@ describe("selectSnapshotsToRecord", () => {
     expect(
       selectSnapshotsToRecord([fiveHourSnapshot], [previousSlotSnapshot]),
     ).toEqual([fiveHourSnapshot]);
+  });
+});
+
+describe("findLatestSnapshot", () => {
+  const olderSnapshot = {
+    slotStartedAt: "2026-10-22T14:00:00.000Z",
+    windowKind: "five_hour",
+    usedPercentage: 10,
+    resetsAt: "2026-10-22T17:00:00.000Z",
+  };
+  const newerSnapshot = {
+    slotStartedAt: "2026-10-22T14:06:00.000Z",
+    windowKind: "seven_day",
+    usedPercentage: 20,
+    resetsAt: "2026-10-27T08:00:00.000Z",
+  };
+
+  it("returns the snapshot of the most recent slot", () => {
+    expect(findLatestSnapshot([olderSnapshot, newerSnapshot])).toBe(
+      newerSnapshot,
+    );
+    expect(findLatestSnapshot([newerSnapshot, olderSnapshot])).toBe(
+      newerSnapshot,
+    );
+  });
+
+  it("skips the missing windows", () => {
+    expect(findLatestSnapshot([null, olderSnapshot])).toBe(olderSnapshot);
+  });
+
+  it("returns null when every window is missing", () => {
+    expect(findLatestSnapshot([null, null])).toBeNull();
+    expect(findLatestSnapshot([])).toBeNull();
   });
 });

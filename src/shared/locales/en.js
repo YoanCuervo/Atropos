@@ -5,9 +5,6 @@
 export default {
   languageName: "English",
   dateLocale: "en-GB",
-  app: {
-    subtitle: "Claude Code usage limits",
-  },
   preferences: {
     title: "Display",
     languageLabel: "Language",

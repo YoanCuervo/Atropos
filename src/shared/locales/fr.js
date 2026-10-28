@@ -4,9 +4,6 @@
 export default {
   languageName: "Français",
   dateLocale: "fr-FR",
-  app: {
-    subtitle: "Limites d’utilisation de Claude Code",
-  },
   preferences: {
     title: "Affichage",
     languageLabel: "Langue",
