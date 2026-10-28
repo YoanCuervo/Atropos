@@ -126,6 +126,8 @@ export default {
     title: "About",
     versionLabel: "Version",
     versionUnknown: "Unknown",
+    privacyNote:
+      "Atropos keeps everything on this computer: no data is ever sent anywhere.",
     releasesLink: "See the releases (opens in your browser)",
     releasesHint:
       "Atropos never checks for updates by itself. Compare your version with the latest release and download its installer if needed.",
