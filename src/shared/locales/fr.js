@@ -93,6 +93,8 @@ export default {
     thresholdHint:
       "Un nombre entier de {min} à {max}. Une notification par semaine au plus.",
     invalidThreshold: "Saisissez un nombre entier de {min} à {max}.",
+    applyButton: "Appliquer",
+    thresholdSaved: "Seuil enregistré.",
   },
   historyClearing: {
     title: "Historique",
