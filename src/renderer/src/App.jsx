@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AtroposLogo from "./components/AtroposLogo.jsx";
 import ViewNavigation from "./components/ViewNavigation.jsx";
 import { useSettings } from "./hooks/useSettings.js";
 import HistoryView from "./views/HistoryView.jsx";
@@ -20,7 +21,10 @@ function App() {
   return (
     <>
       <header className="app-header">
-        <h1 className="app-header__title">Atropos</h1>
+        <h1 className="app-header__title">
+          <AtroposLogo />
+          Atropos
+        </h1>
         <p className="app-header__subtitle">{messages.app.subtitle}</p>
       </header>
       <ViewNavigation
