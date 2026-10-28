@@ -18,7 +18,7 @@ const CONFIRM_BUTTON_INDEX = 1;
  * @param {Messages["clearDialog"]} historyClearing.clearDialogMessages
  * @param {LimitSnapshotsRepository} historyClearing.limitSnapshotsRepository
  * @param {SentAlertsRepository} historyClearing.sentAlertsRepository
- * @param {string} historyClearing.journalPath
+ * @param {string[]} historyClearing.journalPaths Every journal location, current and older.
  * @returns {Promise<boolean>} Whether the user confirmed and the history was cleared.
  */
 export async function confirmThenClearHistory({
@@ -26,7 +26,7 @@ export async function confirmThenClearHistory({
   clearDialogMessages,
   limitSnapshotsRepository,
   sentAlertsRepository,
-  journalPath,
+  journalPaths,
 }) {
   const { response } = await dialog.showMessageBox(parentWindow, {
     type: "warning",
@@ -42,7 +42,7 @@ export async function confirmThenClearHistory({
     return false;
   }
 
-  await discardJournalFiles(journalPath);
+  await Promise.all(journalPaths.map(discardJournalFiles));
   limitSnapshotsRepository.deleteAllSnapshots();
   sentAlertsRepository.deleteAllAlerts();
   return true;

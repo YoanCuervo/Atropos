@@ -1,4 +1,10 @@
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  renameSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname } from "node:path";
 import { applySettingsChange, readStoredSettings } from "../core/settings.js";
 
@@ -14,11 +20,14 @@ import { applySettingsChange, readStoredSettings } from "../core/settings.js";
 /**
  * Keeps the settings of `settings.json` in memory and writes every change back to the file.
  *
- * @param {string} settingsPath `%APPDATA%\Atropos\settings.json`
+ * @param {string} settingsPath `%USERPROFILE%\.atropos\settings.json`
+ * @param {string} legacySettingsPath `%APPDATA%\Atropos\settings.json`, read only while `settingsPath` does not exist yet.
  * @returns {SettingsStore}
  */
-export function createSettingsStore(settingsPath) {
-  let settings = loadSettings(settingsPath);
+export function createSettingsStore(settingsPath, legacySettingsPath) {
+  let settings = loadSettings(
+    existsSync(settingsPath) ? settingsPath : legacySettingsPath,
+  );
 
   return {
     getSettings: () => settings,

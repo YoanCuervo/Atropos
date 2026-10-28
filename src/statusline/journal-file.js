@@ -4,24 +4,24 @@ import { buildJournalPath } from "../core/journal-location.js";
 
 const RECENT_JOURNAL_BYTE_COUNT = 4096;
 
-export class MissingApplicationDataPathError extends Error {
+export class MissingHomeFolderPathError extends Error {
   constructor() {
-    super("The APPDATA environment variable is not set.");
-    this.name = "MissingApplicationDataPathError";
+    super("The USERPROFILE environment variable is not set.");
+    this.name = "MissingHomeFolderPathError";
   }
 }
 
 /**
  * @param {NodeJS.ProcessEnv} [environment]
- * @returns {string} Absolute path of `%APPDATA%\Atropos\limit-snapshots.jsonl`.
- * @throws {MissingApplicationDataPathError}
+ * @returns {string} Absolute path of `%USERPROFILE%\.atropos\limit-snapshots.jsonl`.
+ * @throws {MissingHomeFolderPathError}
  */
 export function resolveJournalPath(environment = process.env) {
-  const applicationDataPath = environment.APPDATA;
-  if (!applicationDataPath) {
-    throw new MissingApplicationDataPathError();
+  const homePath = environment.USERPROFILE;
+  if (!homePath) {
+    throw new MissingHomeFolderPathError();
   }
-  return buildJournalPath(applicationDataPath);
+  return buildJournalPath(homePath);
 }
 
 /**
