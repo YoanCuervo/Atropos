@@ -140,7 +140,13 @@ function renderBand({ elements, isTerminal, reading, nowMs }) {
   ].filter(({ limitWindow }) => limitWindow != null);
 
   return (
-    <Box flexDirection="row" alignItems="center" gap="md" flexWrap="wrap">
+    <Box
+      flexDirection="row"
+      alignItems="center"
+      justifyContent="center"
+      gap="md"
+      flexWrap="wrap"
+    >
       <Box flexDirection="row" alignItems="center" gap="sm">
         {!isTerminal && (
           <Svg
