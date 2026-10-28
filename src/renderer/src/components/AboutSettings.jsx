@@ -51,6 +51,7 @@ function AboutSettings({ aboutMessages }) {
             : (applicationVersion ?? "…")}
         </dd>
       </dl>
+      <p className="settings-section__text">{aboutMessages.privacyNote}</p>
       <p className="settings-field__hint">{aboutMessages.releasesHint}</p>
       <a
         className="settings-button settings-button--link"
