@@ -1,0 +1,9 @@
+{
+  "name": "atropos",
+  "version": "0.1.0",
+  "description": "Shows the context, the session cost and the Claude usage limits above the prompt, and records the limits for the Atropos desktop app.",
+  "author": {
+    "name": "YoanCuervo"
+  },
+  "types": "./types/index.d.ts"
+}
