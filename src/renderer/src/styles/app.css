@@ -1,47 +1,76 @@
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-latin-500-normal.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light dark;
 
-  --color-background: #f7f7f8;
-  --color-surface: #ffffff;
-  --color-border: #d4d4d8;
-  --color-text: #18181b;
-  --color-text-muted: #52525b;
-  --color-focus: #1d4ed8;
-  --color-control-border: #71717a;
-  --color-gauge-track: #fafafa;
-  --color-gauge-comfortable: #15803d;
-  --color-gauge-warning: #b45309;
-  --color-gauge-critical: #b91c1c;
-  --color-chart-seven-day: #1d4ed8;
-  --color-chart-five-hour: #7e22ce;
+  --color-background: #efe5d7;
+  --color-surface: #fffaf3;
+  --color-border: #e8dccb;
+  --color-control-border: #8a7b6c;
+  --color-text: #1c1714;
+  --color-text-muted: #5c4f43;
+  --color-accent: #9a4a12;
+  --color-focus: #2f4f73;
+  --color-emphasis: #141210;
+  --color-on-emphasis: #f3e6d3;
+  --color-on-emphasis-muted: #b8a892;
+  --color-emphasis-accent: #e0913a;
+  --color-emphasis-tile: #2a2622;
+  --color-on-emphasis-tile: #f3e6d3;
+  --color-gauge-track: #e8dccb;
+  --color-gauge-comfortable: #4f6125;
+  --color-gauge-warning: #8a5a10;
+  --color-gauge-critical: #a3301e;
+  --color-chart-seven-day: #9a4a12;
+  --color-chart-five-hour: #1c1714;
 
   --font-family: system-ui, "Segoe UI", sans-serif;
+  --font-family-display: "Cinzel", Georgia, serif;
+  --font-weight-display: 500;
   --font-size-small: 0.875rem;
   --font-size-body: 1rem;
   --font-size-title: 1.5rem;
-  --font-size-percentage: 2rem;
+  --font-size-percentage: 2.25rem;
 
   --space-small: 0.5rem;
   --space-medium: 1rem;
   --space-large: 1.5rem;
   --radius: 0.5rem;
+  --radius-card: 0.875rem;
+  --radius-tile: 0.5rem;
+  --radius-pill: 999px;
+
+  --size-logo: 2rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #18181b;
-    --color-surface: #27272a;
-    --color-border: #3f3f46;
-    --color-text: #f4f4f5;
-    --color-text-muted: #a1a1aa;
-    --color-focus: #93c5fd;
-    --color-control-border: #a1a1aa;
-    --color-gauge-track: #18181b;
-    --color-gauge-comfortable: #4ade80;
-    --color-gauge-warning: #fbbf24;
-    --color-gauge-critical: #f87171;
-    --color-chart-seven-day: #93c5fd;
-    --color-chart-five-hour: #d8b4fe;
+    --color-background: #0b0a09;
+    --color-surface: #1f1c19;
+    --color-border: #2a2622;
+    --color-control-border: #8f8172;
+    --color-text: #f3e6d3;
+    --color-text-muted: #b8a892;
+    --color-accent: #e0913a;
+    --color-focus: #a3b4c9;
+    --color-emphasis: #e0913a;
+    --color-on-emphasis: #141210;
+    --color-on-emphasis-muted: #4a2a0e;
+    --color-emphasis-accent: #141210;
+    --color-emphasis-tile: #c97a28;
+    --color-on-emphasis-tile: #141210;
+    --color-gauge-track: #2a2622;
+    --color-gauge-comfortable: #7d9a4a;
+    --color-gauge-warning: #e9a75a;
+    --color-gauge-critical: #e0634a;
+    --color-chart-seven-day: #e0913a;
+    --color-chart-five-hour: #f3e6d3;
   }
 }
 
@@ -88,8 +117,28 @@ body {
 }
 
 .app-header__title {
+  display: flex;
+  gap: var(--space-small);
+  align-items: center;
   margin: 0;
+  font-family: var(--font-family-display);
   font-size: var(--font-size-title);
+  font-weight: var(--font-weight-display);
+}
+
+.atropos-logo {
+  flex: none;
+  width: var(--size-logo);
+  height: var(--size-logo);
+  background-color: var(--color-accent);
+  mask: url("../../../../resources/icon-glyph.svg") center / contain no-repeat;
+}
+
+@media (forced-colors: active) {
+  .atropos-logo {
+    forced-color-adjust: none;
+    background-color: CanvasText;
+  }
 }
 
 .app-header__subtitle {
@@ -211,7 +260,9 @@ body {
 
 .history-view__title {
   margin: 0 0 var(--space-medium);
+  font-family: var(--font-family-display);
   font-size: var(--font-size-title);
+  font-weight: var(--font-weight-display);
 }
 
 .history-view__period {
@@ -326,7 +377,9 @@ body {
 
 .settings-view__title {
   margin: 0;
+  font-family: var(--font-family-display);
   font-size: var(--font-size-title);
+  font-weight: var(--font-weight-display);
 }
 
 .settings-view__error,

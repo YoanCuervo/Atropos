@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow } from "electron";
 import { join } from "path";
 import { is } from "@electron-toolkit/utils";
+import windowIconPath from "../../resources/icon.png?asset";
 import { isAtroposInterfaceUrl } from "./interface-url.js";
 
 let isApplicationQuitting = false;
@@ -21,6 +22,7 @@ export function createMainWindow() {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    icon: windowIconPath,
     webPreferences: {
       preload: join(__dirname, "../preload/index.js"),
       contextIsolation: true,

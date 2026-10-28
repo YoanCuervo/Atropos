@@ -92,6 +92,8 @@ Les noms existants de `app.css` sont conservés pour limiter la migration. Les j
 - **État des jauges dans la carte principale :** la barre garde `--color-emphasis-accent`. L'état s'affiche dans une pastille onyx (`#141210`) dont le texte prend la valeur sombre de la couleur d'état. Cette pastille est lisible dans les deux thèmes, de 5,4:1 à 9,0:1.
 - **Une seule carte principale par vue**, et au plus une seconde carte onyx ou terre cuite pour une action secondaire.
 - **Pas d'opacité sur le texte.** Le texte secondaire a sa propre couleur.
+- **Pas de texte secondaire dans un encadré.** `--color-on-emphasis-muted` sur `--color-emphasis-tile` tombe à 3,9:1 en sombre : les encadrés n’utilisent que `--color-on-emphasis-tile`.
+- **Contrôle automatique :** `src/renderer/src/styles/theme-contrast.test.js` relit `app.css` et vérifie chaque couple dans `npm test`.
 
 ## 5. Typographie
 
@@ -103,7 +105,7 @@ Les noms existants de `app.css` sont conservés pour limiter la migration. Les j
 | Texte courant         | `system-ui`, `"Segoe UI"`        | 0,875 rem | 400     |
 | Légende               | `system-ui`                      | 0,75 rem  | 400     |
 
-Cinzel est sous licence SIL Open Font License. Elle serait livrée en `.woff2` dans `resources/fonts/`, avec sa licence, et non comme paquet npm. **À valider avant la tâche d'identité visuelle.** Sans accord, les titres restent en `system-ui`.
+Cinzel est sous licence SIL Open Font License. Elle est livrée en `.woff2` (latin, graisse 500) dans `src/renderer/src/assets/fonts/`, avec sa licence `OFL.txt`, et non comme paquet npm. Vite l’empaquette avec l’interface.
 
 Les chiffres utilisent `font-variant-numeric: tabular-nums` pour ne pas bouger quand ils changent. Aucun texte en dessous de 0,75 rem.
 
@@ -139,7 +141,7 @@ L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible re
 
 - Tracé SVG simple, en terre cuite sur fond onyx pour l'icône de l'app.
 - Lisible à 16 px pour l'icône près de l'horloge. Sous cette taille, seul l'arc est gardé.
-- Variantes : `icon.svg` (source), `icon.ico` (application, 16 à 256 px) et les PNG de la zone de notification pour les thèmes clair et sombre de Windows.
+- Variantes : `icon.svg` et `icon-glyph.svg` (sources), `icon.ico` (application, 16 à 256 px) et les PNG de la zone de notification, d’une seule couleur lisible sur les deux barres des tâches. Le détail est dans [logo-spec.md](logo-spec.md).
 - Aucun nom, logo ni forme évoquant Claude ou Anthropic.
 
 ## 10. Hors V1
