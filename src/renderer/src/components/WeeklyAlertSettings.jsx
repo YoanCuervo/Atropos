@@ -46,8 +46,8 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
   };
 
   return (
-    <section className="settings-section" aria-labelledby="alert-title">
-      <h3 id="alert-title" className="settings-section__title">
+    <section className="card settings-section" aria-labelledby="alert-title">
+      <h3 id="alert-title" className="card__title settings-section__title">
         {alertMessages.title}
       </h3>
       <div className="settings-check">

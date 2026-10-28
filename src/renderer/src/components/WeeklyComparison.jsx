@@ -30,8 +30,11 @@ function WeeklyComparison({
   } = weeklyComparison;
 
   return (
-    <section className="weekly-comparison" aria-labelledby="comparison-title">
-      <h3 id="comparison-title" className="weekly-comparison__title">
+    <section
+      className="card card--full weekly-comparison"
+      aria-labelledby="comparison-title"
+    >
+      <h3 id="comparison-title" className="card__title">
         {comparisonMessages.title}
       </h3>
       <dl className="weekly-comparison__figures">

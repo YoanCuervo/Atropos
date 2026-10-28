@@ -25,8 +25,8 @@ function HistoryClearing({ clearingMessages }) {
   };
 
   return (
-    <section className="settings-section" aria-labelledby="clearing-title">
-      <h3 id="clearing-title" className="settings-section__title">
+    <section className="card settings-section" aria-labelledby="clearing-title">
+      <h3 id="clearing-title" className="card__title settings-section__title">
         {clearingMessages.title}
       </h3>
       <p className="settings-section__text">{clearingMessages.explanation}</p>

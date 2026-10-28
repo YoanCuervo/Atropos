@@ -42,8 +42,8 @@ function HistoryView({ messages }) {
   );
 
   return (
-    <section className="history-view" aria-labelledby="history-title">
-      <h2 id="history-title" className="history-view__title">
+    <section className="view" aria-labelledby="history-title">
+      <h2 id="history-title" className="view__title">
         {historyMessages.title}
       </h2>
       <fieldset className="history-view__period">
@@ -96,7 +96,7 @@ function renderHistoryContent({
 
   if (status === "loading") {
     return (
-      <p className="history-view__message" role="status">
+      <p className="card" role="status">
         {historyMessages.loading}
       </p>
     );
@@ -104,7 +104,7 @@ function renderHistoryContent({
 
   if (status === "error") {
     return (
-      <div className="history-view__message" role="alert">
+      <div className="card view__message" role="alert">
         <p>{historyMessages.loadError}</p>
         <button
           type="button"
@@ -118,7 +118,7 @@ function renderHistoryContent({
   }
 
   if (status === "empty") {
-    return <p className="history-view__message">{historyMessages.empty}</p>;
+    return <p className="card view__message">{historyMessages.empty}</p>;
   }
 
   const dateDisplayOptions = {
@@ -131,7 +131,7 @@ function renderHistoryContent({
   const dayTickStep = Math.ceil(dailyHistoryRows.length / MAX_DAY_TICK_COUNT);
 
   return (
-    <>
+    <div className="card-grid">
       {weeklyComparison !== null && (
         <WeeklyComparison
           weeklyComparison={weeklyComparison}
@@ -139,37 +139,39 @@ function renderHistoryContent({
           historyMessages={historyMessages}
         />
       )}
-      <figure className="history-view__figure">
-        <figcaption className="history-view__figcaption">
-          {fillMessageTemplate(historyMessages.chartTitle, {
+      <div className="card card--full history-card">
+        <figure className="history-card__figure">
+          <figcaption className="card__title history-card__caption">
+            {fillMessageTemplate(historyMessages.chartTitle, {
+              dayCount: periodDayCount,
+            })}
+          </figcaption>
+          <HistoryChart
+            fiveHourPoints={buildChartPoints(limitHistory.fiveHourSnapshots)}
+            sevenDayPoints={buildChartPoints(limitHistory.sevenDaySnapshots)}
+            timeDomainMs={[limitHistory.startMs, limitHistory.endMs]}
+            dayTicksMs={dailyHistoryRows
+              .slice(1)
+              .filter((_dailyHistoryRow, index) => index % dayTickStep === 0)
+              .map((dailyHistoryRow) => dailyHistoryRow.dayTimestampMs)}
+            historyMessages={historyMessages}
+            chartDescription={fillMessageTemplate(
+              historyMessages.chartDescription,
+              { dayCount: periodDayCount },
+            )}
+            dateDisplayOptions={dateDisplayOptions}
+          />
+        </figure>
+        <HistoryTable
+          dailyHistoryRows={dailyHistoryRows}
+          tableCaption={fillMessageTemplate(historyMessages.tableCaption, {
             dayCount: periodDayCount,
           })}
-        </figcaption>
-        <HistoryChart
-          fiveHourPoints={buildChartPoints(limitHistory.fiveHourSnapshots)}
-          sevenDayPoints={buildChartPoints(limitHistory.sevenDaySnapshots)}
-          timeDomainMs={[limitHistory.startMs, limitHistory.endMs]}
-          dayTicksMs={dailyHistoryRows
-            .slice(1)
-            .filter((_dailyHistoryRow, index) => index % dayTickStep === 0)
-            .map((dailyHistoryRow) => dailyHistoryRow.dayTimestampMs)}
           historyMessages={historyMessages}
-          chartDescription={fillMessageTemplate(
-            historyMessages.chartDescription,
-            { dayCount: periodDayCount },
-          )}
           dateDisplayOptions={dateDisplayOptions}
         />
-      </figure>
-      <HistoryTable
-        dailyHistoryRows={dailyHistoryRows}
-        tableCaption={fillMessageTemplate(historyMessages.tableCaption, {
-          dayCount: periodDayCount,
-        })}
-        historyMessages={historyMessages}
-        dateDisplayOptions={dateDisplayOptions}
-      />
-    </>
+      </div>
+    </div>
   );
 }
 

@@ -50,8 +50,14 @@ function StatusLineSetup({ setupMessages }) {
   };
 
   return (
-    <section className="settings-section" aria-labelledby="status-line-title">
-      <h3 id="status-line-title" className="settings-section__title">
+    <section
+      className="card card--full settings-section"
+      aria-labelledby="status-line-title"
+    >
+      <h3
+        id="status-line-title"
+        className="card__title settings-section__title"
+      >
         {setupMessages.title}
       </h3>
       <p className="settings-section__text">{setupMessages.explanation}</p>

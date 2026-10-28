@@ -15,8 +15,8 @@ import { MESSAGES_BY_LANGUAGE } from "../../../shared/locales/index.js";
  */
 function DisplaySettings({ settings, preferencesMessages, onSettingsChange }) {
   return (
-    <section className="settings-section" aria-labelledby="display-title">
-      <h3 id="display-title" className="settings-section__title">
+    <section className="card settings-section" aria-labelledby="display-title">
+      <h3 id="display-title" className="card__title settings-section__title">
         {preferencesMessages.title}
       </h3>
       <div className="settings-section__fields">

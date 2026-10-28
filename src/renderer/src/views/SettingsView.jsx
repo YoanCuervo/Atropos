@@ -18,8 +18,8 @@ import WeeklyAlertSettings from "../components/WeeklyAlertSettings.jsx";
  */
 function SettingsView({ settings, messages, onSettingsChange, hasSaveFailed }) {
   return (
-    <section className="settings-view" aria-labelledby="settings-title">
-      <h2 id="settings-title" className="settings-view__title">
+    <section className="view" aria-labelledby="settings-title">
+      <h2 id="settings-title" className="view__title">
         {messages.settings.title}
       </h2>
       {hasSaveFailed && (
@@ -27,18 +27,20 @@ function SettingsView({ settings, messages, onSettingsChange, hasSaveFailed }) {
           {messages.preferences.saveError}
         </p>
       )}
-      <DisplaySettings
-        settings={settings}
-        preferencesMessages={messages.preferences}
-        onSettingsChange={onSettingsChange}
-      />
-      <WeeklyAlertSettings
-        settings={settings}
-        alertMessages={messages.alertSettings}
-        onSettingsChange={onSettingsChange}
-      />
-      <HistoryClearing clearingMessages={messages.historyClearing} />
-      <StatusLineSetup setupMessages={messages.statusLineSetup} />
+      <div className="settings-grid">
+        <DisplaySettings
+          settings={settings}
+          preferencesMessages={messages.preferences}
+          onSettingsChange={onSettingsChange}
+        />
+        <WeeklyAlertSettings
+          settings={settings}
+          alertMessages={messages.alertSettings}
+          onSettingsChange={onSettingsChange}
+        />
+        <HistoryClearing clearingMessages={messages.historyClearing} />
+        <StatusLineSetup setupMessages={messages.statusLineSetup} />
+      </div>
     </section>
   );
 }
