@@ -12,6 +12,7 @@
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
     "build": "electron-vite build && vite build --config statusline.vite.config.mjs",
+    "icons": "electron scripts/generate-icons.mjs",
     "postinstall": "install-electron",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win"
