@@ -37,6 +37,7 @@
 
   --font-family: system-ui, "Segoe UI", sans-serif;
   --font-family-display: "Cinzel", Georgia, serif;
+  --font-family-data: Consolas, "Cascadia Mono", monospace;
   --font-weight-display: 500;
   --font-size-caption: 0.75rem;
   --font-size-small: 0.875rem;
@@ -285,6 +286,13 @@ body {
   .card--wide {
     grid-column: auto;
   }
+}
+
+.weekly-limit-card,
+.ring-card,
+.weekly-comparison,
+.history-card {
+  font-family: var(--font-family-data);
 }
 
 .card__title {
@@ -685,7 +693,7 @@ body {
   margin: 0.25rem 0 var(--space-small);
   padding: var(--space-small) var(--space-medium);
   overflow-x: auto;
-  font-family: Consolas, "Cascadia Mono", monospace;
+  font-family: var(--font-family-data);
   font-size: var(--font-size-small);
   background: var(--color-background);
   border: 1px solid var(--color-border);
