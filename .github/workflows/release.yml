@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # A tag such as v0.1.0-test.1 is accepted for 0.1.0 and becomes a prerelease.
+      - name: Check the tag against the app and mod versions
+        id: version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          app_version=$(node -p "require('./package.json').version")
+          mod_version=$(node -p "require('./src/mod/plugin/.claude-plugin/plugin.json').version")
+          if [ "$app_version" != "$mod_version" ]; then
+            echo "::error::package.json ($app_version) and plugin.json ($mod_version) versions differ"
+            exit 1
+          fi
+          case "$tag_version" in
+            "$app_version") echo "prerelease_flag=" >> "$GITHUB_OUTPUT" ;;
+            "$app_version"-*) echo "prerelease_flag=--prerelease" >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "::error::Tag $GITHUB_REF_NAME does not match version $app_version"
+              exit 1
+              ;;
+          esac
+          echo "app_version=$app_version" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+      - run: npm run build
+      - run: npx electron-builder --win --publish never
+
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > release-notes.md <<'NOTES'
+          ## Claude Code mod
+
+          At the prompt of a Claude Code terminal session:
+
+          ```
+          /plugin install atropos --marketplace YoanCuervo/Atropos#mod
+          ```
+
+          The mod is published to the `mod` branch when this release is published.
+          NOTES
+          gh release create "$GITHUB_REF_NAME" \
+            "dist/atropos-${{ steps.version.outputs.app_version }}-setup.exe" \
+            --draft ${{ steps.version.outputs.prerelease_flag }} \
+            --title "Atropos $GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            --generate-notes
