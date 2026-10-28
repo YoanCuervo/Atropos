@@ -12,6 +12,7 @@
   --color-background: #efe5d7;
   --color-surface: #fffaf3;
   --color-border: #e8dccb;
+  --color-fret: #2a2622;
   --color-control-border: #8a7b6c;
   --color-text: #1c1714;
   --color-text-muted: #5c4f43;
@@ -60,6 +61,7 @@
     --color-background: #0b0a09;
     --color-surface: #1f1c19;
     --color-border: #2a2622;
+    --color-fret: #e8dccb;
     --color-control-border: #8f8172;
     --color-text: #f3e6d3;
     --color-text-muted: #b8a892;
@@ -219,7 +221,7 @@ body {
   display: block;
   width: 100%;
   height: 12px;
-  stroke: var(--color-border);
+  stroke: var(--color-fret);
 }
 
 .updated-time-tag {
