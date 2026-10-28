@@ -148,15 +148,15 @@ L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible re
 
 Le mod dessine une ligne au-dessus de la zone de saisie de Claude, dans l'app de bureau comme dans le terminal. Il ne connaît pas le thème de Claude, clair ou sombre : ses graphiques ont donc des couleurs fixes, lisibles sur les deux, et ses textes prennent les couleurs du thème de Claude.
 
-| Élément              | Rendu                                                                                        |
-| -------------------- | -------------------------------------------------------------------------------------------- |
-| Glyphe               | `icon-glyph.svg` en terre cuite moyenne `#c06a1f`, 15 px                                     |
-| Modèle               | Nom de la famille (« Opus »), couleur atténuée                                               |
-| Contexte             | Barre arrondie de 36 × 6 px en gris `#8a7b6c`, puis « 72k / 200k », le total atténué         |
-| Coût                 | « $0.24 », atténué                                                                           |
-| Limite               | Libellé atténué, barre de 44 × 6 px en terre cuite `#c06a1f`, pourcentage en demi-gras       |
-| Avance sur le rythme | Pastille cerclée, couleur `success` si positive et `error` si négative, signe toujours écrit |
-| Temps restant        | « ↻ 3h05 » sous 24 h, « ↻ 1j 4h » au-delà, atténué                                           |
+| Élément              | Rendu                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| Glyphe               | `icon-glyph.svg` en terre cuite moyenne `#c06a1f`, 15 px                                       |
+| Modèle               | Nom de la famille (« Opus »), couleur atténuée                                                 |
+| Contexte             | Barre arrondie de 36 × 6 px en gris `#8a7b6c`, puis « 72k / 200k », le total atténué           |
+| Coût                 | « $0.24 », atténué                                                                             |
+| Limite               | Libellé atténué, barre de 44 × 6 px en terre cuite `#c06a1f`, pourcentage en demi-gras         |
+| Avance sur le rythme | Texte sans encadré, couleur `success` si positive et `error` si négative, signe toujours écrit |
+| Temps restant        | « ↻ 3h05 » sous 24 h, « ↻ 1j 4h » au-delà, atténué                                             |
 
 - **Avance sur le rythme :** part de la fenêtre déjà écoulée moins part utilisée. Positive, il reste de la marge.
 - **Contrastes :** `#c06a1f` et `#8a7b6c` atteignent au moins 3,2:1 sur les fonds clairs et sombres de Claude. Le rail des barres est décoratif.

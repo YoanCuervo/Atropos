@@ -245,11 +245,9 @@ function renderLimitWindow({
       <Text weight="semibold" bold tabular>
         {usedPercentageText}
       </Text>
-      <Box borderStyle="round" borderColor={paceColor} paddingX="xs">
-        <Text color={paceColor} size="footnote" tabular>
-          {formatSignedPercentage(paceDelta, locale)}
-        </Text>
-      </Box>
+      <Text color={paceColor} size="footnote" tabular>
+        {formatSignedPercentage(paceDelta, locale)}
+      </Text>
       <Text dimColor tabular>
         ↻ {formatRemainingTime(limitWindow.resetsAtMs - nowMs, messages.band)}
       </Text>
