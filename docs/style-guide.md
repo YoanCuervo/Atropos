@@ -98,13 +98,16 @@ Les noms existants de `app.css` sont conservés pour limiter la migration. Les j
 
 ## 5. Typographie
 
-| Rôle                  | Police                           | Taille    | Graisse |
-| --------------------- | -------------------------------- | --------- | ------- |
-| Logo et titres de vue | Cinzel, repli `Georgia, serif`   | 1,5 rem   | 500     |
-| Grand chiffre         | `system-ui`, chiffres tabulaires | 2,25 rem  | 500     |
-| Titre de carte        | `system-ui`                      | 1 rem     | 500     |
-| Texte courant         | `system-ui`, `"Segoe UI"`        | 0,875 rem | 400     |
-| Légende               | `system-ui`                      | 0,75 rem  | 400     |
+| Rôle                  | Police                                       | Taille        | Graisse       |
+| --------------------- | -------------------------------------------- | ------------- | ------------- |
+| Logo et titres de vue | Cinzel, repli `Georgia, serif`               | 1,5 rem       | 500           |
+| Grand chiffre         | `system-ui`, chiffres tabulaires             | 2,25 rem      | 500           |
+| Titre de carte        | `system-ui`                                  | 1 rem         | 500           |
+| Texte courant         | `system-ui`, `"Segoe UI"`                    | 0,875 rem     | 400           |
+| Légende               | `system-ui`                                  | 0,75 rem      | 400           |
+| Données               | Consolas, repli `"Cascadia Mono", monospace` | selon le rôle | selon le rôle |
+
+**Données :** tout le contenu des cartes des vues Limites et Historique (titres, chiffres, encadrés, axes de la courbe) et le bloc de code des Réglages utilise `--font-family-data`. Consolas est fournie par Windows : rien n’est livré avec l’app.
 
 Cinzel est sous licence SIL Open Font License. Elle est livrée en `.woff2` (latin, graisse 500) dans `src/renderer/src/assets/fonts/`, avec sa licence `OFL.txt`, et non comme paquet npm. Vite l’empaquette avec l’interface.
 
