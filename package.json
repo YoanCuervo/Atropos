@@ -11,7 +11,7 @@
     "test": "vitest run --passWithNoTests",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
-    "build": "electron-vite build && vite build --config statusline.vite.config.mjs",
+    "build": "electron-vite build && vite build --config statusline.vite.config.mjs && vite build --config mod.vite.config.mjs",
     "icons": "electron scripts/generate-icons.mjs",
     "postinstall": "install-electron",
     "build:unpack": "npm run build && electron-builder --dir",

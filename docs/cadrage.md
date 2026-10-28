@@ -6,10 +6,11 @@ Validé le 22 octobre 2026.
 
 Atropos suit en direct les limites d'utilisation de Claude Code : la fenêtre glissante de 5 heures et la limite hebdomadaire.
 
-Le projet a deux briques :
+Le projet a trois briques :
 
-1. **Une barre d'état Claude Code.** Elle affiche les limites dans Claude Code et enregistre un relevé toutes les 6 minutes.
-2. **Une application de bureau Windows.** Elle conserve l'historique, affiche une icône près de l'horloge et prévient quand la limite hebdomadaire approche.
+1. **Un mod Claude Code.** Il affiche en continu, au-dessus de la zone de saisie, le contexte, le coût de la session et les deux limites avec leur avance sur un rythme régulier. Il enregistre les limites dans le journal d'Atropos. Il tourne dans l'app de bureau de Claude comme dans le terminal.
+2. **Une barre d'état Claude Code.** Elle fait la même collecte dans le terminal, en secours.
+3. **Une application de bureau Windows.** Elle conserve l'historique, affiche une icône près de l'horloge et prévient quand la limite hebdomadaire approche.
 
 Le dépôt [Agent Burn](https://github.com/Melvynx/agent-burn) sert d'inspiration. Atropos n'en réutilise ni le code, ni le binaire, ni le nom, ni le logo.
 
@@ -21,7 +22,19 @@ Le dépôt [Agent Burn](https://github.com/Melvynx/agent-burn) sert d'inspiratio
 
 ## 3. Source des données
 
-Claude Code transmet un JSON à la commande de sa barre d'état. C'est la seule source de données d'Atropos.
+Atropos ne lit que les limites que Claude Code donne lui-même à ses extensions. Deux extensions les reçoivent, et elles écrivent le même journal.
+
+**Le mod, source principale.** L'API des mods fournit `$.session.usage()` et l'événement `session.measure`, déclenché après chaque tour et chaque fois qu'une limite bouge d'un point entier.
+
+| Champ de `rateLimits[]` | Contenu                                   |
+| ----------------------- | ----------------------------------------- |
+| `kind`                  | `five_hour`, `seven_day` ou `spend_limit` |
+| `percentUsed`           | pourcentage utilisé, de 0 à 100           |
+| `resetsAt`              | remise à zéro, en horodatage ISO 8601     |
+
+Les mods tournent dans le terminal, dans l'app de bureau de Claude (depuis la version 2.1.290) et dans l'extension VS Code. Ils ne se chargent pas en mode non interactif (`claude -p`).
+
+**La barre d'état, en secours.** Claude Code transmet un JSON à la commande de sa barre d'état, dans le terminal seulement.
 
 | Champ                                   | Contenu                         |
 | --------------------------------------- | ------------------------------- |
@@ -30,9 +43,13 @@ Claude Code transmet un JSON à la commande de sa barre d'état. C'est la seule 
 | `rate_limits.seven_day.used_percentage` | pourcentage utilisé, de 0 à 100 |
 | `rate_limits.seven_day.resets_at`       | remise à zéro, en secondes Unix |
 
-- `rate_limits` n'est présent que pour les abonnés Pro et Max, et seulement après la première réponse de l'API dans la session. Son absence est un cas normal à gérer.
-- La commande est relancée à chaque nouveau message, sur un minuteur `refreshInterval` et quand une fenêtre se remet à zéro.
-- La configuration se fait dans `~/.claude/settings.json`, avec `statusLine: { type: "command", command: "..." }`.
+- Dans les deux cas, les limites ne sont présentes que pour les abonnés Pro et Max, et seulement après la première réponse de l'API dans la session. Leur absence est un cas normal à gérer.
+- Ce sont les limites de la dernière réponse reçue. L'usage fait sur claude.ai apparaît à la réponse suivante dans Claude Code.
+- La barre d'état se configure dans `~/.claude/settings.json`, avec `statusLine: { type: "command", command: "..." }`.
+
+### Pourquoi pas des requêtes de relevé
+
+Claude Code en mode non interactif (`claude -p`) renvoie aussi les limites, dans un événement `rate_limit_event`. Testé le 28 octobre 2026 : chaque relevé est une vraie requête qui consomme le quota, et elle ouvre une fenêtre de 5 heures si aucune n'est en cours. Mesurer son quota en le consommant n'a pas de sens : la piste est écartée.
 
 ### Pourquoi pas le jeton OAuth
 
@@ -41,10 +58,12 @@ Agent Burn lit le jeton dans `~/.claude/.credentials.json` et appelle `api.anthr
 ## 4. Architecture
 
 ```
-Claude Code ──JSON (stdin)──▶ statusline/   affiche « 5h 42% · week 67% »
-                                   │
-                                   │ ajoute un relevé par créneau de 6 min
-                                   ▼
+Claude Code ──session.measure──▶ mod/          bandeau au-dessus de la saisie
+     │                                │
+     └──JSON (stdin)──▶ statusline/  │  (terminal, en secours)
+                             │        │
+                             │        │ un relevé par créneau de 6 min
+                             ▼        ▼
                     %APPDATA%\Atropos\limit-snapshots.jsonl
                                    │
                                    │ importé à chaque créneau
@@ -58,12 +77,13 @@ Claude Code ──JSON (stdin)──▶ statusline/   affiche « 5h 42% · week 
 
 **Couches, avec des dépendances dans un seul sens :**
 
-- `core/` : logique pure, sans Electron ni effet de bord. Elle est utilisée par `statusline/` et par `main/`.
+- `core/` : logique pure, sans Electron ni effet de bord. Elle est utilisée par `mod/`, `statusline/` et `main/`.
+- `mod/` : mod Claude Code, empaqueté avec `core/` et `shared/` dans `out/mod/`. Il n'atteint les fichiers qu'à travers l'API des mods (`$.fs`, `$.env`).
 - `statusline/` : script Node lancé par Claude Code. Il lit l'entrée standard, écrit la sortie standard et ajoute des lignes au journal.
 - `main/` : processus Electron. Il gère la base, l'import, la planification, l'icône près de l'horloge, les notifications et l'IPC.
 - `preload/` : pont `contextBridge`. Il expose le strict minimum.
 - `renderer/` : React, pour l'affichage uniquement. Il n'a aucun accès au système.
-- `shared/` : les traductions, utilisées par `main/` et par `renderer/`.
+- `shared/` : les traductions, utilisées par `mod/`, `main/` et `renderer/`.
 
 Une couche n'importe jamais une couche de niveau supérieur.
 
@@ -75,6 +95,7 @@ Une couche n'importe jamais une couche de niveau supérieur.
 
 **Inclus :**
 
+- Mod Claude Code : bandeau avec le modèle, le contexte, le coût, et pour chaque limite le pourcentage, l'avance sur le rythme et le temps restant. Collecte des limites dans le journal.
 - Barre d'état Claude Code : pourcentage 5 h et hebdo, avec l'heure de remise à zéro.
 - Icône près de l'horloge avec le pourcentage hebdo dans l'info-bulle. Clic gauche pour ouvrir la fenêtre, menu par clic droit.
 - Vue des limites actuelles : jauges et heures de remise à zéro.
@@ -210,6 +231,7 @@ Ces principes sont permanents, indépendamment du risque légal.
 
 - **Lancement du script de barre d'état sur une machine sans Node :** deux pistes, Node installé ou l'exécutable d'Atropos lancé avec `ELECTRON_RUN_AS_NODE=1`. À trancher pendant la tâche d'empaquetage.
 - **Construction du script de barre d'état :** il doit être livré avec les fichiers de `core/` dont il dépend.
+- **Installation du mod :** dossier déclaré dans `CLAUDE_CODE_PLUGIN_DIRS` pour le développement, puis place de marché GitHub (`/plugin install`) à la publication. À trancher pendant la tâche de publication.
 - **Carte « Le fil » :** date d'épuisement de la limite hebdomadaire au rythme actuel. Reportée en V1.1, voir [style-guide.md](style-guide.md).
 
 ## 13. Découpage de la V1
@@ -233,8 +255,9 @@ Une tâche correspond à une session et à une branche `feature/*` partie de `de
 | 12  | Alerte hebdo : décision dans `core/`, notification, table `sent_alerts`                                                                    | `feature/weekly-alert`        |
 | 13  | Empaquetage : electron-builder, livraison de la barre d'état, test de l'installateur                                                       | `feature/packaging`           |
 | 14  | Identité visuelle : jetons des deux thèmes, logo, icônes de l'app et de la zone de notification, police des titres                         | `feature/visual-identity`     |
+| 14b | Mod Claude Code : bandeau au-dessus de la saisie, collecte des limites dans le journal                                                     | `feature/claude-code-mod`     |
 | 15  | Refonte de l'interface : barre latérale, grille de cartes, composants des trois vues                                                       | `feature/ui-redesign`         |
-| 16  | Workflow de publication GitHub Actions et première publication                                                                             | `feature/release-workflow`    |
+| 16  | Workflow de publication GitHub Actions et première publication, publication du mod sur une place de marché GitHub                          | `feature/release-workflow`    |
 | 17  | README : captures, GIF, schéma, section « Privacy »                                                                                        | `feature/readme`              |
 | 18  | Audit `/conform-rgaa`, puis corrections                                                                                                    | `feature/accessibility-audit` |
 | 19  | Audit `/conform-cnil`, puis corrections                                                                                                    | `feature/privacy-audit`       |

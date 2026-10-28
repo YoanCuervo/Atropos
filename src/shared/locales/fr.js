@@ -126,6 +126,16 @@ export default {
     title: "Atropos · limite hebdomadaire",
     body: "Vous avez utilisé {percentage}\u00a0% de votre limite hebdomadaire. Réinitialisation {resetTime}.",
   },
+  band: {
+    fiveHourLabel: "5h",
+    sevenDayLabel: "Semaine",
+    remainingMinutes: "{minutes}\u00a0min",
+    remainingHours: "{hours}h{minutes}",
+    remainingDays: "{days}j {hours}h",
+    logoAlt: "Atropos",
+    contextBarAlt: "Contexte rempli à {percentage}",
+    limitBarAlt: "{label}\u00a0: {percentage} utilisés",
+  },
   tray: {
     open: "Ouvrir Atropos",
     refresh: "Actualiser",

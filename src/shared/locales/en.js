@@ -124,6 +124,16 @@ export default {
     title: "Atropos · weekly limit",
     body: "{percentage}% of your weekly limit is used. It resets {resetTime}.",
   },
+  band: {
+    fiveHourLabel: "5h",
+    sevenDayLabel: "Week",
+    remainingMinutes: "{minutes}m",
+    remainingHours: "{hours}h{minutes}",
+    remainingDays: "{days}d {hours}h",
+    logoAlt: "Atropos",
+    contextBarAlt: "Context {percentage} full",
+    limitBarAlt: "{label}: {percentage} used",
+  },
   tray: {
     open: "Open Atropos",
     refresh: "Refresh now",
