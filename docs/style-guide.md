@@ -53,6 +53,7 @@ Les noms existants de `app.css` sont conservés pour limiter la migration. Les j
 | `--color-background`        | `#efe5d7` | `#0b0a09` | Fond de la page                                       |
 | `--color-surface`           | `#fffaf3` | `#1f1c19` | Cartes ordinaires, barre latérale                     |
 | `--color-border`            | `#e8dccb` | `#2a2622` | Séparateurs décoratifs                                |
+| `--color-fret`              | `#2a2622` | `#e8dccb` | Frise grecque, valeurs de `--color-border` inversées  |
 | `--color-control-border`    | `#8a7b6c` | `#8f8172` | Bordure des champs et des boutons                     |
 | `--color-text`              | `#1c1714` | `#f3e6d3` | Texte principal                                       |
 | `--color-text-muted`        | `#5c4f43` | `#b8a892` | Texte secondaire                                      |
@@ -132,7 +133,7 @@ L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible re
 
 ## 8. Motif et mouvement
 
-- **Frise grecque** en SVG répété, utilisée comme séparateur dans la barre latérale ou en pied de vue. Elle est décorative (`aria-hidden="true"`) et prend `--color-border`.
+- **Frise grecque** en SVG répété, utilisée comme séparateur dans la barre latérale ou en pied de vue. Elle est décorative (`aria-hidden="true"`) et prend `--color-fret`, assez contrasté pour rester visible sur la barre latérale.
 - **Animations** limitées au remplissage des jauges à leur mise à jour, en 300 ms au plus. Aucune animation avec `prefers-reduced-motion: reduce`.
 
 ## 9. Logo et icônes
@@ -140,6 +141,7 @@ L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible re
 **Concept :** un « A » en chevron, sans barre, dont la jambe droite est coupée par des ciseaux.
 
 - Tracé SVG simple, en terre cuite sur fond onyx pour l'icône de l'app.
+- Icônes des vues dans la barre latérale : tracés SVG de 24 unités, contour de 2, bouts arrondis. Limites : une jauge ; Historique : une courbe ; Réglages : une roue crantée.
 - Lisible à 16 px pour l'icône près de l'horloge. Sous 32 px, le glyphe garde le A et sa jambe coupée, sans les ciseaux.
 - Variantes : `icon.svg` et `icon-glyph.svg` (sources), `icon.ico` (application, 16 à 256 px) et les PNG de la zone de notification, d’une seule couleur lisible sur les deux barres des tâches. Le détail est dans [logo-spec.md](logo-spec.md).
 - Aucun nom, logo ni forme évoquant Claude ou Anthropic.
