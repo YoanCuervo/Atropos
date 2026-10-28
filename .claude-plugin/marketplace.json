@@ -1,0 +1,12 @@
+{
+  "name": "atropos",
+  "owner": { "name": "YoanCuervo" },
+  "description": "The Atropos mod for Claude Code: live usage limits above the prompt.",
+  "plugins": [
+    {
+      "name": "atropos",
+      "source": "./",
+      "description": "Claude Code usage limits above the prompt, recorded for the Atropos desktop app."
+    }
+  ]
+}
