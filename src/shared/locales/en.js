@@ -27,7 +27,7 @@ export default {
     retry: "Try again",
     emptyTitle: "No limits recorded yet",
     emptyText:
-      "Limits are recorded by the Atropos mod in Claude Code. Open Claude Code and send a message: they appear here within six minutes.",
+      "Limits are recorded by the Atropos mod in Claude Code. Open Claude Code and send a message: they appear here right after its reply.",
     fiveHourTitle: "Session (5 hours)",
     sevenDayTitle: "Week",
     fiveHourReset: "at {time}",
@@ -110,7 +110,7 @@ export default {
     stepPaste:
       "Add the block below at the top level of the file, then save it.",
     stepUse:
-      "Use Claude Code in a terminal, signed in with a Pro or Max plan. Limits appear here within six minutes.",
+      "Use Claude Code in a terminal, signed in with a Pro or Max plan. Limits appear here right after each reply.",
     desktopNote:
       "Only Claude Code in a terminal runs the status line. The desktop app records limits through the mod only.",
     codeLabel: "Block to add to ~/.claude/settings.json",

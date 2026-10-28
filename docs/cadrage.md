@@ -64,9 +64,9 @@ Claude Code ──session.measure──▶ mod/          bandeau au-dessus de la
                              │        │
                              │        │ un relevé par créneau de 6 min
                              ▼        ▼
-                    %APPDATA%\Atropos\limit-snapshots.jsonl
+                    %USERPROFILE%\.atropos\limit-snapshots.jsonl
                                    │
-                                   │ importé à chaque créneau
+                                   │ importé dès qu'il change
                                    ▼
             main/ (Electron) ──▶ atropos.db (SQLite) ──▶ alertes, icône
                    │
@@ -130,7 +130,7 @@ Une couche n'importe jamais une couche de niveau supérieur.
 
 ## 7. Données
 
-**Fichier d'échange** `%APPDATA%\Atropos\limit-snapshots.jsonl`, une ligne par relevé :
+**Fichier d'échange** `%USERPROFILE%\.atropos\limit-snapshots.jsonl`, une ligne par relevé. Il est hors d'AppData exprès : Claude Desktop est un paquet MSIX, et ses processus, dont le mod, voient une copie privée d'AppData que l'app Atropos ne lit pas.
 
 ```json
 {
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS sent_alerts (
 );
 ```
 
-**Réglages :** `%APPDATA%\Atropos\settings.json`, avec la langue, le thème, l'activation de l'alerte et son seuil.
+**Réglages :** `%USERPROFILE%\.atropos\settings.json`, partagés avec le mod qui suit leur langue, avec la langue, le thème, l'activation de l'alerte et son seuil.
 
 **Règles :**
 
