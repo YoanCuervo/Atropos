@@ -121,6 +121,22 @@ body {
   }
 }
 
+.skip-link {
+  position: absolute;
+  top: var(--space-small);
+  left: var(--space-small);
+  z-index: 1;
+  padding: var(--space-small) var(--space-medium);
+  color: var(--color-surface);
+  background: var(--color-text);
+  border-radius: var(--radius-pill);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
 .app-layout {
   display: grid;
   grid-template-columns: var(--size-sidebar) minmax(0, 1fr);

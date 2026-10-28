@@ -100,6 +100,7 @@ function HistoryChart({
             strokeWidth={2}
             strokeDasharray="6 4"
             dot={false}
+            legendType="plainline"
             isAnimationActive={false}
           />
           <Line
@@ -109,6 +110,7 @@ function HistoryChart({
             stroke="var(--color-chart-seven-day)"
             strokeWidth={2}
             dot={false}
+            legendType="plainline"
             isAnimationActive={false}
           />
         </LineChart>

@@ -29,7 +29,7 @@ function Sidebar({ currentView, onViewChange, lastRecordedAt, messages }) {
   const navigationMessages = messages.navigation;
 
   return (
-    <aside className="sidebar">
+    <header className="sidebar">
       <h1 className="sidebar__title">
         <AtroposLogo />
         Atropos
@@ -70,7 +70,7 @@ function Sidebar({ currentView, onViewChange, lastRecordedAt, messages }) {
           />
         )}
       </div>
-    </aside>
+    </header>
   );
 }
 

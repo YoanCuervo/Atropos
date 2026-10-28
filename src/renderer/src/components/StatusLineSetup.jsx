@@ -75,6 +75,7 @@ function StatusLineSetup({ setupMessages }) {
           </p>
           <pre
             className="settings-code"
+            role="region"
             aria-labelledby="status-line-code-label"
             tabIndex={0}
           >
