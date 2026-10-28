@@ -38,9 +38,11 @@ import {
 } from "./weekly-alert.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
-// Windows routes a click on a notification in the Action Center to this COM class id,
-// as recorded in the Start menu shortcut. Electron draws a new one on every launch
-// unless it is fixed, which leaves the shortcut pointing at a class nobody serves.
+/**
+ * Windows routes a click on a notification in the Action Center to this COM class id,
+ * as recorded in the Start menu shortcut. Electron draws a new one on every launch
+ * unless it is fixed, which leaves the shortcut pointing at a class nobody serves.
+ */
 const TOAST_ACTIVATOR_CLSID = "{3120F106-854C-4AE1-B5FF-1AA869653C18}";
 const DATABASE_FILE_NAME = "atropos.db";
 

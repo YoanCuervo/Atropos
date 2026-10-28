@@ -8,8 +8,10 @@ const APP_ICON_RADIUS_RATIO = 56 / 256;
 const FULL_LOGO_MINIMUM_SIZE_PX = 32;
 const APP_ICON_SIZES_PX = [16, 20, 24, 32, 40, 48, 64, 128, 256];
 const TRAY_ICON_SIZES_PX = { "": 16, "@1.25x": 20, "@1.5x": 24, "@2x": 32 };
-// Mid terracotta: at least 3:1 on both the light and the dark Windows taskbar,
-// because Electron cannot tell a dark taskbar that shows the accent color.
+/**
+ * Mid terracotta: at least 3:1 on both the light and the dark Windows taskbar,
+ * because Electron cannot tell a dark taskbar that shows the accent color.
+ */
 const TRAY_GLYPH_COLOR = "#c06a1f";
 
 const outputDirectory = resolve(readOutputDirectoryArgument() ?? ".");

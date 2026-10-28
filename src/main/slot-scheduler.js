@@ -1,8 +1,10 @@
 import { powerMonitor } from "electron";
 import { computeNextSlotStartMs } from "../core/time-slots.js";
 
-// Windows timers can fire a few milliseconds early: waiting slightly past the
-// slot start guarantees the task runs inside the new slot.
+/**
+ * Windows timers can fire a few milliseconds early: waiting slightly past the
+ * slot start guarantees the task runs inside the new slot.
+ */
 const SLOT_START_MARGIN_MS = 1000;
 
 /**

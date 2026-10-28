@@ -1,8 +1,10 @@
 import { join } from "node:path";
 
 export const APPLICATION_DATA_FOLDER_NAME = "Atropos";
-// Outside AppData on purpose: packaged apps such as Claude Desktop see a private copy
-// of AppData, so a journal written there by the mod never reaches the Atropos app.
+/**
+ * Outside AppData on purpose: packaged apps such as Claude Desktop see a private copy
+ * of AppData, so a journal written there by the mod never reaches the Atropos app.
+ */
 export const SHARED_FOLDER_NAME = ".atropos";
 export const JOURNAL_FILE_NAME = "limit-snapshots.jsonl";
 
