@@ -66,7 +66,7 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
         />
         <label htmlFor="alert-enabled">{alertMessages.enabledLabel}</label>
       </div>
-      <form className="settings-field" onSubmit={saveThreshold}>
+      <form className="settings-field" onSubmit={saveThreshold} noValidate>
         <label className="settings-field__label" htmlFor="alert-threshold">
           {alertMessages.thresholdLabel}
         </label>
