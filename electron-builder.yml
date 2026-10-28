@@ -1,0 +1,28 @@
+appId: dev.yoancuervo.atropos
+productName: Atropos
+directories:
+  buildResources: build
+files:
+  - out/**
+  - "!out/statusline/**"
+  - "!out/mod/**"
+  - resources/**
+  - package.json
+asarUnpack:
+  - "resources/**"
+extraResources:
+  - from: out/statusline/index.mjs
+    to: statusline/index.mjs
+  - from: src/statusline/atropos-statusline.cmd
+    to: statusline/atropos-statusline.cmd
+  - from: src/renderer/src/assets/fonts/OFL.txt
+    to: licenses/Cinzel-OFL.txt
+win:
+  executableName: Atropos
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  deleteAppDataOnUninstall: true
+npmRebuild: false

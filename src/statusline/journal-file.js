@@ -1,0 +1,77 @@
+import { appendFile, mkdir, open } from "node:fs/promises";
+import { dirname } from "node:path";
+import { buildJournalPath } from "../core/journal-location.js";
+
+const RECENT_JOURNAL_BYTE_COUNT = 4096;
+
+export class MissingHomeFolderPathError extends Error {
+  constructor() {
+    super("The USERPROFILE environment variable is not set.");
+    this.name = "MissingHomeFolderPathError";
+  }
+}
+
+/**
+ * @param {NodeJS.ProcessEnv} [environment]
+ * @returns {string} Absolute path of `%USERPROFILE%\.atropos\limit-snapshots.jsonl`.
+ * @throws {MissingHomeFolderPathError}
+ */
+export function resolveJournalPath(environment = process.env) {
+  const homePath = environment.USERPROFILE;
+  if (!homePath) {
+    throw new MissingHomeFolderPathError();
+  }
+  return buildJournalPath(homePath);
+}
+
+/**
+ * Reads only the end of the journal: it keeps growing while the desktop app
+ * is closed, and the status line runs every minute.
+ *
+ * @param {string} journalPath
+ * @returns {Promise<string[]>} Complete lines, oldest first; empty when the journal does not exist yet.
+ */
+export async function readRecentJournalLines(journalPath) {
+  let journalFile;
+  try {
+    journalFile = await open(journalPath, "r");
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+
+  try {
+    const { size: journalByteCount } = await journalFile.stat();
+    const readByteCount = Math.min(journalByteCount, RECENT_JOURNAL_BYTE_COUNT);
+    const buffer = Buffer.alloc(readByteCount);
+    await journalFile.read(
+      buffer,
+      0,
+      readByteCount,
+      journalByteCount - readByteCount,
+    );
+
+    const lines = buffer.toString("utf8").split("\n");
+    const isFirstLineCut = readByteCount < journalByteCount;
+    if (isFirstLineCut) {
+      lines.shift();
+    }
+    return lines.filter((line) => line.trim() !== "");
+  } finally {
+    await journalFile.close();
+  }
+}
+
+/**
+ * Appends lines to the journal, creating its folder if needed.
+ *
+ * @param {string} journalPath
+ * @param {string[]} journalLines Lines that already end with a newline.
+ * @returns {Promise<void>}
+ */
+export async function appendJournalLines(journalPath, journalLines) {
+  await mkdir(dirname(journalPath), { recursive: true });
+  await appendFile(journalPath, journalLines.join(""), "utf8");
+}

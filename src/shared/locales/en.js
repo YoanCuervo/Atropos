@@ -1,0 +1,165 @@
+/**
+ * English texts, the default language. Each `{name}` is filled by `fillMessageTemplate`.
+ * Every other locale must have exactly the same keys and placeholders.
+ */
+export default {
+  languageName: "English",
+  dateLocale: "en-GB",
+  preferences: {
+    title: "Display",
+    languageLabel: "Language",
+    themeLabel: "Theme",
+    themes: {
+      system: "System",
+      light: "Light",
+      dark: "Dark",
+    },
+    saveError: "The setting could not be saved.",
+  },
+  limits: {
+    title: "Limits",
+    paceLabel: "Pace margin",
+    remainingLabel: "Resets in",
+    comparisonLabel: "Compared with last week",
+    notRecorded: "Not recorded",
+    loading: "Loading limits…",
+    loadError: "Atropos could not read the limits.",
+    retry: "Try again",
+    emptyTitle: "No limits recorded yet",
+    emptyText:
+      "Limits are recorded by the Atropos mod in Claude Code. Open Claude Code and send a message: they appear here right after its reply.",
+    fiveHourTitle: "Session (5 hours)",
+    sevenDayTitle: "Week",
+    fiveHourReset: "at {time}",
+    updatedPrefix: "Updated",
+  },
+  usageLevels: {
+    comfortable: "Comfortable",
+    warning: "Watch",
+    critical: "Critical",
+  },
+  gauge: {
+    used: "{percentage}% used",
+    resetsPrefix: "Resets",
+    missing: "No data for this limit yet.",
+  },
+  navigation: {
+    label: "Views",
+    skipToContent: "Skip to content",
+    limits: "Limits",
+    history: "History",
+    settings: "Settings",
+  },
+  history: {
+    title: "History",
+    periodLabel: "Period",
+    sevenDays: "7 days",
+    thirtyDays: "30 days",
+    loading: "Loading history…",
+    loadError: "Atropos could not read the history.",
+    retry: "Try again",
+    empty: "No history recorded for this period yet.",
+    chartTitle: "Usage over the last {dayCount} days",
+    chartDescription:
+      "Line chart of the weekly and session usage over the last {dayCount} days. The same data is in the table below.",
+    sevenDaySeries: "Week",
+    fiveHourSeries: "Session (5 hours)",
+    tableToggle: "Show the data as a table",
+    tableCaption: "Usage by day over the last {dayCount} days",
+    dayColumn: "Day",
+    fiveHourColumn: "Highest session usage",
+    sevenDayColumn: "Weekly usage at end of day",
+    noData: "No data",
+    percentage: "{percentage}%",
+  },
+  comparison: {
+    title: "Compared with last week",
+    current: "This week",
+    samePoint: "Last week at the same point",
+    previousLast: "Last week, last recorded",
+    notRecorded: "Not recorded",
+    pointsLess: "{points} points less",
+    onePointLess: "1 point less",
+    pointsMore: "{points} points more",
+    onePointMore: "1 point more",
+    same: "Same as last week",
+  },
+  settings: {
+    title: "Settings",
+  },
+  alertSettings: {
+    title: "Weekly alert",
+    enabledLabel: "Notify me when the weekly usage reaches the threshold",
+    thresholdLabel: "Threshold (%)",
+    thresholdHint:
+      "A whole number from {min} to {max}. One notification per week at most.",
+    invalidThreshold: "Enter a whole number from {min} to {max}.",
+    applyButton: "Apply",
+    thresholdSaved: "Threshold saved.",
+  },
+  historyClearing: {
+    title: "History",
+    explanation:
+      "Atropos keeps the snapshots of the last 12 months on this computer only. Clearing deletes all of them, including those waiting to be imported.",
+    button: "Clear history",
+    cleared: "History cleared.",
+    failed: "The history could not be cleared.",
+  },
+  statusLineSetup: {
+    title: "Status line",
+    explanation:
+      "The Atropos mod records your limits in Claude Code. The status line is a fallback for a terminal where the mod is not loaded. Atropos never edits your Claude Code settings: you add it yourself.",
+    stepOpen: "Open the Claude Code settings file, ~/.claude/settings.json.",
+    stepPaste:
+      "Add the block below at the top level of the file, then save it.",
+    stepUse:
+      "Use Claude Code in a terminal, signed in with a Pro or Max plan. Limits appear here right after each reply.",
+    desktopNote:
+      "Only Claude Code in a terminal runs the status line. The desktop app records limits through the mod only.",
+    codeLabel: "Block to add to ~/.claude/settings.json",
+    copyButton: "Copy",
+    copied: "Copied.",
+    copyFailed: "Copy failed: select the block and copy it by hand.",
+    loadError: "Atropos could not prepare the block.",
+  },
+  about: {
+    title: "About",
+    versionLabel: "Version",
+    versionUnknown: "Unknown",
+    privacyNote:
+      "Atropos keeps everything on this computer: no data is ever sent anywhere.",
+    releasesLink: "See the releases (opens in your browser)",
+    releasesHint:
+      "Atropos never checks for updates by itself. Compare your version with the latest release and download its installer if needed.",
+  },
+  clearDialog: {
+    title: "Clear history",
+    message: "Delete all recorded limits?",
+    detail:
+      "Every snapshot stored by Atropos on this computer is deleted. This cannot be undone.",
+    cancel: "Cancel",
+    confirm: "Clear history",
+  },
+  weeklyAlert: {
+    title: "Atropos · weekly limit",
+    body: "{percentage}% of your weekly limit is used. It resets {resetTime}.",
+  },
+  band: {
+    fiveHourLabel: "5h",
+    sevenDayLabel: "Week",
+    remainingMinutes: "{minutes}m",
+    remainingHours: "{hours}h{minutes}",
+    remainingDays: "{days}d {hours}h",
+    logoAlt: "Atropos",
+    contextBarAlt: "Context {percentage} full",
+    limitBarAlt: "{label}: {percentage} used",
+  },
+  tray: {
+    open: "Open Atropos",
+    refresh: "Refresh now",
+    quit: "Quit",
+    tooltip:
+      "Atropos · week {percentage}% · resets {resetTime} · updated {updateTime}",
+    noLimitsTooltip: "Atropos · no limits recorded yet",
+  },
+};
