@@ -49,6 +49,12 @@ const atroposApi = {
     ipcRenderer.invoke(IPC_CHANNELS.getStatusLineSettings),
 
   /**
+   * @returns {Promise<string>} The installed version of Atropos, such as `0.1.0`.
+   */
+  getApplicationVersion: () =>
+    ipcRenderer.invoke(IPC_CHANNELS.getApplicationVersion),
+
+  /**
    * @param {(limitsOverview: LimitsOverview) => void} handleLimitsUpdate
    * @returns {() => void} Stops listening.
    */

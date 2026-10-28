@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 import {
   computeHistoryStartMs,
   parseHistoryRequest,
@@ -89,6 +89,10 @@ export function registerIpcHandlers({
 
   handleTrustedRequests(IPC_CHANNELS.getStatusLineSettings, () =>
     readStatusLineSettings(),
+  );
+
+  handleTrustedRequests(IPC_CHANNELS.getApplicationVersion, () =>
+    app.getVersion(),
   );
 }
 

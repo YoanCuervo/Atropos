@@ -10,4 +10,5 @@ export const IPC_CHANNELS = Object.freeze({
   updateSettings: "settings:update",
   clearHistory: "history:clear",
   getStatusLineSettings: "statusline:get-settings",
+  getApplicationVersion: "app:get-version",
 });
