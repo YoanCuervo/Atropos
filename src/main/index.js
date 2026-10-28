@@ -15,6 +15,7 @@ import { openDatabase } from "./database/open-database.js";
 import { createSentAlertsRepository } from "./database/sent-alerts-repository.js";
 import { confirmThenClearHistory } from "./history-clearing.js";
 import { maintainHistory } from "./history-maintenance.js";
+import { watchJournal } from "./journal-watcher.js";
 import {
   readLimitsOverview,
   registerIpcHandlers,
@@ -200,8 +201,14 @@ async function startApplication() {
     }),
   );
 
+  const journalWatcher = watchJournal(
+    buildJournalPath(app.getPath("appData")),
+    () => slotScheduler.runNow(),
+  );
+
   app.on("second-instance", () => showMainWindow(mainWindow));
   app.on("will-quit", () => {
+    journalWatcher.stop();
     slotScheduler.stop();
     applicationTray.destroy();
     database.close();
