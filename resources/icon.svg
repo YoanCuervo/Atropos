@@ -1,13 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
   <rect width="256" height="256" rx="56" fill="#141210"/>
-  <g fill="none" stroke="#e0913a" stroke-linecap="round">
-    <path d="M55.67 212.33 A74 74 0 0 1 150.44 99.38" stroke-width="18"/>
-    <path d="M168.62 117.56 A74 74 0 0 1 160.33 212.33" stroke-width="9"/>
+  <g fill="none" stroke="#e0913a" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M62 190 L128 60 L143.8 91.2"/>
+    <path d="M168.9 140.6 L194 190"/>
   </g>
-  <g transform="translate(160.33 107.67) rotate(-45) scale(1.6)" fill="none" stroke="#f3e6d3" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M-20 -8 L16 3 L28 10" stroke-width="7"/>
-    <path d="M-20 8 L16 -3 L28 -10" stroke-width="7"/>
-    <circle cx="38" cy="15" r="9" stroke-width="6"/>
-    <circle cx="38" cy="-15" r="9" stroke-width="6"/>
+  <g stroke-linejoin="round">
+    <g fill="#141210" stroke="#141210" stroke-width="9">
+      <polygon points="169.45 120.68 98 140 170.95 127.52"/>
+      <polygon points="151.19 105.91 114 162 156.81 110.09"/>
+      <circle cx="160" cy="100" r="9.5"/>
+      <circle cx="180" cy="122" r="9.5"/>
+    </g>
+    <g fill="#f3e6d3" stroke="#f3e6d3" stroke-width="2">
+      <polygon points="169.45 120.68 98 140 170.95 127.52"/>
+      <polygon points="151.19 105.91 114 162 156.81 110.09"/>
+    </g>
+    <g fill="none" stroke="#f3e6d3" stroke-width="5">
+      <circle cx="160" cy="100" r="7"/>
+      <circle cx="180" cy="122" r="7"/>
+    </g>
   </g>
 </svg>

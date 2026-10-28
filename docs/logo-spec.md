@@ -1,6 +1,6 @@
 # Atropos — Spécification du logo
 
-Le logo actuel est provisoire. Ce document décrit ce qu’un logo de remplacement doit fournir pour s’intégrer à l’app sans toucher au code. Le concept et la palette viennent de [style-guide.md](style-guide.md), sections 3 et 9.
+Le logo est un « A » coupé par des ciseaux ; le glyphe garde le A et sa jambe coupée, sans les ciseaux. Ce document décrit ce qu’un logo de remplacement doit fournir pour s’intégrer à l’app sans toucher au code. Le concept et la palette viennent de [style-guide.md](style-guide.md), sections 3 et 9.
 
 ## 1. Contraintes
 
@@ -55,7 +55,7 @@ Le glyphe est décoratif (`aria-hidden="true"`) : le nom « Atropos » écrit à
 
 ## 5. Contrastes à respecter
 
-Le logo est un élément graphique : 3:1 au minimum. Valeurs du logo provisoire :
+Le logo est un élément graphique : 3:1 au minimum. Valeurs du logo actuel :
 
 | Couple                                                                      | Contraste   |
 | --------------------------------------------------------------------------- | ----------- |
