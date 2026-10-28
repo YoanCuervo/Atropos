@@ -10,8 +10,19 @@ import { getMessages } from "../shared/locales/index.js";
 /** @typedef {import("../core/settings.js").Settings} Settings */
 /** @typedef {import("./database/sent-alerts-repository.js").SentAlertsRepository} SentAlertsRepository */
 
-// Windows drops the click handler of a notification that has been garbage collected.
+// Keeps the notification alive until Windows reports whether it could be shown.
 let shownNotification = null;
+
+/**
+ * Opens the window whenever a notification of Atropos is clicked, including one left in
+ * the Action Center by an earlier launch: the click handler of a single notification
+ * only covers the notification while this launch still holds it.
+ *
+ * @param {() => void} onNotificationClicked
+ */
+export function handleNotificationClicks(onNotificationClicked) {
+  Notification.handleActivation(() => onNotificationClicked());
+}
 
 /**
  * Shows a Windows notification when the weekly usage reaches the threshold,
@@ -24,7 +35,6 @@ let shownNotification = null;
  * @param {Settings} weeklyAlertCheck.settings
  * @param {SentAlertsRepository} weeklyAlertCheck.sentAlertsRepository
  * @param {number} weeklyAlertCheck.nowMs Unix timestamp, in milliseconds.
- * @param {() => void} weeklyAlertCheck.onNotificationClicked
  * @returns {boolean} Whether a notification was shown.
  */
 export function notifyWeeklyUsageIfNeeded({
@@ -32,7 +42,6 @@ export function notifyWeeklyUsageIfNeeded({
   settings,
   sentAlertsRepository,
   nowMs,
-  onNotificationClicked,
 }) {
   if (sevenDaySnapshot === null || !Notification.isSupported()) {
     return false;
@@ -69,7 +78,6 @@ export function notifyWeeklyUsageIfNeeded({
     },
   );
   shownNotification = new Notification({ title, body });
-  shownNotification.on("click", onNotificationClicked);
   shownNotification.on("failed", (_event, failureReason) => {
     console.warn("Atropos weekly alert not delivered:", failureReason);
     sentAlertsRepository.forgetSentAlert(sentAlert);

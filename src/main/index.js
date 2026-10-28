@@ -25,11 +25,19 @@ import { createSettingsStore } from "./settings-store.js";
 import { startSlotScheduler } from "./slot-scheduler.js";
 import { resolveStatusLineCommandParts } from "./status-line-script.js";
 import { createApplicationTray } from "./tray.js";
-import { notifyWeeklyUsageIfNeeded } from "./weekly-alert.js";
+import {
+  handleNotificationClicks,
+  notifyWeeklyUsageIfNeeded,
+} from "./weekly-alert.js";
 
 const APPLICATION_USER_MODEL_ID = "dev.yoancuervo.atropos";
+// Windows routes a click on a notification in the Action Center to this COM class id,
+// as recorded in the Start menu shortcut. Electron draws a new one on every launch
+// unless it is fixed, which leaves the shortcut pointing at a class nobody serves.
+const TOAST_ACTIVATOR_CLSID = "{3120F106-854C-4AE1-B5FF-1AA869653C18}";
 const DATABASE_FILE_NAME = "atropos.db";
 
+app.setToastActivatorCLSID(TOAST_ACTIVATOR_CLSID);
 app.setPath(
   "userData",
   join(app.getPath("appData"), APPLICATION_DATA_FOLDER_NAME),
@@ -137,7 +145,6 @@ async function startApplication() {
       settings: settingsStore.getSettings(),
       sentAlertsRepository,
       nowMs: Date.now(),
-      onNotificationClicked: () => showMainWindow(mainWindow),
     });
 
   let slotScheduler;
@@ -182,6 +189,7 @@ async function startApplication() {
       formatStatusLineSettings(resolveStatusLineCommandParts()),
   });
   const mainWindow = createMainWindow();
+  handleNotificationClicks(() => showMainWindow(mainWindow));
   slotScheduler = startSlotScheduler(() =>
     refreshHistory(limitSnapshotsRepository, {
       applicationTray,
