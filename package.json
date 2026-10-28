@@ -5,6 +5,7 @@
   "description": "Live Claude Code usage limits on the Windows desktop.",
   "main": "./out/main/index.js",
   "author": "YoanCuervo",
+  "license": "MIT",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
