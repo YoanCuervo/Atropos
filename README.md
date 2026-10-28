@@ -23,10 +23,6 @@
 
 Works with Claude Code. Atropos only reads the limits that Claude Code gives its own extensions. It never reads your Claude credentials and never calls an Anthropic API.
 
-## Demo
-
-![Sending a message in Claude Code updates the band above the prompt, then the Atropos window and its tray tooltip.](docs/images/demo.gif)
-
 ## Features
 
 - **Claude Code mod.** A band above the prompt shows the model, the context, the session cost and, for each limit, the share used, the pace margin and the time left. It runs in the terminal and in the Claude desktop app, and records the limits for the app.
