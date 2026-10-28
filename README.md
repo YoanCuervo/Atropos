@@ -103,7 +103,7 @@ Atropos keeps everything on your computer.
   - `%USERPROFILE%\.atropos\settings.json`: language, theme and alert settings.
   - `%APPDATA%\Atropos\atropos.db`: the history database.
 
-Uninstalling Atropos removes the app. Delete the two folders above to remove your data too.
+Uninstalling Atropos removes the app and `%APPDATA%\Atropos`, history database included. Delete `%USERPROFILE%\.atropos` to remove the journal and the settings too.
 
 ## Accessibility
 
