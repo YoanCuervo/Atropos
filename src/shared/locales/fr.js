@@ -26,7 +26,7 @@ export default {
     retry: "Réessayer",
     emptyTitle: "Aucune limite relevée pour l’instant",
     emptyText:
-      "Les limites sont relevées par le mod Atropos dans Claude Code. Ouvrez Claude Code et envoyez un message : elles apparaissent ici en moins de six minutes.",
+      "Les limites sont relevées par le mod Atropos dans Claude Code. Ouvrez Claude Code et envoyez un message : elles apparaissent ici dès sa réponse.",
     fiveHourTitle: "Session (5 heures)",
     sevenDayTitle: "Semaine",
     fiveHourReset: "à {time}",
@@ -93,6 +93,8 @@ export default {
     thresholdHint:
       "Un nombre entier de {min} à {max}. Une notification par semaine au plus.",
     invalidThreshold: "Saisissez un nombre entier de {min} à {max}.",
+    applyButton: "Appliquer",
+    thresholdSaved: "Seuil enregistré.",
   },
   historyClearing: {
     title: "Historique",
@@ -111,7 +113,7 @@ export default {
     stepPaste:
       "Ajoutez le bloc ci-dessous au premier niveau du fichier, puis enregistrez-le.",
     stepUse:
-      "Utilisez Claude Code dans un terminal, connecté avec un abonnement Pro ou Max. Les limites apparaissent ici en moins de six minutes.",
+      "Utilisez Claude Code dans un terminal, connecté avec un abonnement Pro ou Max. Les limites apparaissent ici après chaque réponse.",
     desktopNote:
       "Seul Claude Code dans un terminal lance la barre d’état. L’application de bureau relève les limites uniquement grâce au mod.",
     codeLabel: "Bloc à ajouter à ~/.claude/settings.json",

@@ -2,11 +2,17 @@ import { app, nativeTheme } from "electron";
 import { join } from "path";
 import { electronApp, optimizer } from "@electron-toolkit/utils";
 import trayIconPath from "../../resources/tray.png?asset";
+import { mkdirSync } from "node:fs";
 import {
   APPLICATION_DATA_FOLDER_NAME,
   buildJournalPath,
+  buildLegacyJournalPath,
+  buildSharedFolderPath,
 } from "../core/journal-location.js";
-import { buildSettingsPath } from "../core/settings-location.js";
+import {
+  buildLegacySettingsPath,
+  buildSettingsPath,
+} from "../core/settings-location.js";
 import { formatStatusLineSettings } from "../core/status-line-setup.js";
 import { formatTrayTooltip } from "../core/tray-text.js";
 import { getMessages } from "../shared/locales/index.js";
@@ -15,6 +21,7 @@ import { openDatabase } from "./database/open-database.js";
 import { createSentAlertsRepository } from "./database/sent-alerts-repository.js";
 import { confirmThenClearHistory } from "./history-clearing.js";
 import { maintainHistory } from "./history-maintenance.js";
+import { watchJournal } from "./journal-watcher.js";
 import {
   readLimitsOverview,
   registerIpcHandlers,
@@ -42,6 +49,16 @@ app.setPath(
   "userData",
   join(app.getPath("appData"), APPLICATION_DATA_FOLDER_NAME),
 );
+
+/**
+ * @returns {string[]} The shared journal, then the one older versions wrote in AppData.
+ */
+function listJournalPaths() {
+  return [
+    buildJournalPath(app.getPath("home")),
+    buildLegacyJournalPath(app.getPath("appData")),
+  ];
+}
 
 /** @typedef {import("./database/limit-snapshots-repository.js").LimitSnapshotsRepository} LimitSnapshotsRepository */
 /** @typedef {import("./database/sent-alerts-repository.js").SentAlertsRepository} SentAlertsRepository */
@@ -112,7 +129,7 @@ async function refreshHistory(
   },
 ) {
   await maintainHistory({
-    journalPath: buildJournalPath(app.getPath("appData")),
+    journalPaths: listJournalPaths(),
     limitSnapshotsRepository,
     sentAlertsRepository,
     nowMs: Date.now(),
@@ -136,8 +153,10 @@ async function startApplication() {
   );
   const limitSnapshotsRepository = createLimitSnapshotsRepository(database);
   const sentAlertsRepository = createSentAlertsRepository(database);
+  mkdirSync(buildSharedFolderPath(app.getPath("home")), { recursive: true });
   const settingsStore = createSettingsStore(
-    buildSettingsPath(app.getPath("appData")),
+    buildSettingsPath(app.getPath("home")),
+    buildLegacySettingsPath(app.getPath("appData")),
   );
   const notifyWeeklyUsage = (sevenDaySnapshot) =>
     notifyWeeklyUsageIfNeeded({
@@ -172,7 +191,7 @@ async function startApplication() {
           .clearDialog,
         limitSnapshotsRepository,
         sentAlertsRepository,
-        journalPath: buildJournalPath(app.getPath("appData")),
+        journalPaths: listJournalPaths(),
       });
       if (isHistoryCleared) {
         const limitsOverview = readLimitsOverview(limitSnapshotsRepository);
@@ -200,8 +219,14 @@ async function startApplication() {
     }),
   );
 
+  const journalWatcher = watchJournal(
+    buildJournalPath(app.getPath("home")),
+    () => slotScheduler.runNow(),
+  );
+
   app.on("second-instance", () => showMainWindow(mainWindow));
   app.on("will-quit", () => {
+    journalWatcher.stop();
     slotScheduler.stop();
     applicationTray.destroy();
     database.close();

@@ -16,8 +16,8 @@ const THRESHOLD_BOUNDS = {
 };
 
 /**
- * Whether to be notified, and from which weekly usage. The threshold is saved when the field
- * loses focus or on Enter, never on each keystroke, so a half-typed number is never saved.
+ * Whether to be notified, and from which weekly usage. The threshold is saved only with
+ * the Apply button or Enter, since each saved threshold may send an alert right away.
  *
  * @param {object} props
  * @param {Settings} props.settings
@@ -29,8 +29,12 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
     String(settings.weeklyAlertThresholdPercentage),
   );
   const [isThresholdInvalid, setIsThresholdInvalid] = useState(false);
+  const [isThresholdSaved, setIsThresholdSaved] = useState(false);
+  const hasThresholdChanged =
+    thresholdText !== String(settings.weeklyAlertThresholdPercentage);
 
-  const saveThreshold = () => {
+  const saveThreshold = (event) => {
+    event.preventDefault();
     const thresholdPercentage = Number(thresholdText);
     if (
       thresholdText.trim() === "" ||
@@ -42,6 +46,7 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
     setIsThresholdInvalid(false);
     if (thresholdPercentage !== settings.weeklyAlertThresholdPercentage) {
       onSettingsChange({ weeklyAlertThresholdPercentage: thresholdPercentage });
+      setIsThresholdSaved(true);
     }
   };
 
@@ -61,34 +66,40 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
         />
         <label htmlFor="alert-enabled">{alertMessages.enabledLabel}</label>
       </div>
-      <div className="settings-field">
+      <form className="settings-field" onSubmit={saveThreshold}>
         <label className="settings-field__label" htmlFor="alert-threshold">
           {alertMessages.thresholdLabel}
         </label>
-        <input
-          id="alert-threshold"
-          className="settings-field__control settings-field__control--number"
-          type="number"
-          inputMode="numeric"
-          min={MIN_ALERT_THRESHOLD_PERCENTAGE}
-          max={MAX_ALERT_THRESHOLD_PERCENTAGE}
-          step={1}
-          value={thresholdText}
-          disabled={!settings.isWeeklyAlertEnabled}
-          aria-invalid={isThresholdInvalid}
-          aria-describedby={
-            isThresholdInvalid
-              ? "alert-threshold-error"
-              : "alert-threshold-hint"
-          }
-          onChange={(event) => setThresholdText(event.target.value)}
-          onBlur={saveThreshold}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              saveThreshold();
+        <div className="settings-field__row">
+          <input
+            id="alert-threshold"
+            className="settings-field__control settings-field__control--number"
+            type="number"
+            inputMode="numeric"
+            min={MIN_ALERT_THRESHOLD_PERCENTAGE}
+            max={MAX_ALERT_THRESHOLD_PERCENTAGE}
+            step={1}
+            value={thresholdText}
+            disabled={!settings.isWeeklyAlertEnabled}
+            aria-invalid={isThresholdInvalid}
+            aria-describedby={
+              isThresholdInvalid
+                ? "alert-threshold-error"
+                : "alert-threshold-hint"
             }
-          }}
-        />
+            onChange={(event) => {
+              setThresholdText(event.target.value);
+              setIsThresholdSaved(false);
+            }}
+          />
+          <button
+            type="submit"
+            className="settings-button"
+            disabled={!settings.isWeeklyAlertEnabled || !hasThresholdChanged}
+          >
+            {alertMessages.applyButton}
+          </button>
+        </div>
         {isThresholdInvalid ? (
           <p
             id="alert-threshold-error"
@@ -105,7 +116,10 @@ function WeeklyAlertSettings({ settings, alertMessages, onSettingsChange }) {
             {fillMessageTemplate(alertMessages.thresholdHint, THRESHOLD_BOUNDS)}
           </p>
         )}
-      </div>
+        <p className="settings-section__status" role="status">
+          {isThresholdSaved && alertMessages.thresholdSaved}
+        </p>
+      </form>
     </section>
   );
 }

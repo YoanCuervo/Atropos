@@ -1,6 +1,6 @@
 import {
-  APPLICATION_DATA_FOLDER_NAME,
   JOURNAL_FILE_NAME,
+  SHARED_FOLDER_NAME,
 } from "../core/journal-location.js";
 import { SETTINGS_FILE_NAME } from "../core/settings-location.js";
 import { readStoredSettings } from "../core/settings.js";
@@ -24,13 +24,13 @@ import { computeSlotStartMs } from "../core/time-slots.js";
 /**
  * @param {ModsApi} $
  * @param {string} fileName
- * @returns {Promise<string | null>} Absolute path in `%APPDATA%\Atropos`, or `null` without `APPDATA`.
+ * @returns {Promise<string | null>} Absolute path in `%USERPROFILE%\.atropos`, or `null` without `USERPROFILE`.
  */
 async function resolveAtroposFilePath($, fileName) {
-  const applicationDataPath = await $.env.get("APPDATA");
-  return applicationDataPath === undefined
+  const homePath = await $.env.get("USERPROFILE");
+  return homePath === undefined
     ? null
-    : `${applicationDataPath}\\${APPLICATION_DATA_FOLDER_NAME}\\${fileName}`;
+    : `${homePath}\\${SHARED_FOLDER_NAME}\\${fileName}`;
 }
 
 /**

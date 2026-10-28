@@ -653,6 +653,12 @@ body {
   width: 6rem;
 }
 
+.settings-field__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+}
+
 .settings-field__control:disabled {
   color: var(--color-text-muted);
   background: var(--color-background);
@@ -703,6 +709,11 @@ body {
   margin: 0.25rem 0 0;
   font-family: var(--font-family-data);
   font-size: 1.25rem;
+}
+
+.settings-button:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
 }
 
 .settings-code {
