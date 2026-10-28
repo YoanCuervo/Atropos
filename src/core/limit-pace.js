@@ -1,5 +1,6 @@
 /** @typedef {import("./rate-limits.js").LimitWindow} LimitWindow */
 /** @typedef {import("./rate-limits.js").WindowKind} WindowKind */
+/** @typedef {import("./snapshot-journal.js").LimitSnapshot} LimitSnapshot */
 
 const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 
@@ -24,4 +25,18 @@ export function computePaceDeltaPercentage(limitWindow, nowMs) {
     windowDurationMs,
   );
   return (elapsedMs / windowDurationMs) * 100 - limitWindow.usedPercentage;
+}
+
+/**
+ * Reads a recorded snapshot as a limit window, so the pace can be computed from the history.
+ *
+ * @param {LimitSnapshot} limitSnapshot
+ * @returns {LimitWindow}
+ */
+export function convertSnapshotToLimitWindow(limitSnapshot) {
+  return {
+    windowKind: limitSnapshot.windowKind,
+    usedPercentage: limitSnapshot.usedPercentage,
+    resetsAtMs: Date.parse(limitSnapshot.resetsAt),
+  };
 }

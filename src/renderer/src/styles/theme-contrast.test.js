@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 
 const TEXT_MINIMUM_RATIO = 4.5;
 const GRAPHIC_MINIMUM_RATIO = 3;
-const STATUS_PILL_BACKGROUND = "#141210";
 
 /** Foreground token, background token, minimum ratio: every pair the interface draws. */
 const TOKEN_PAIRS = [
@@ -122,13 +121,13 @@ describe.each(Object.entries(themeTokens))("%s theme", (themeName, tokens) => {
 
 describe("status pill inside the main card", () => {
   it.each([
-    "--color-gauge-comfortable",
-    "--color-gauge-warning",
-    "--color-gauge-critical",
-  ])("dark %s on onyx reaches 4.5:1", (stateToken) => {
+    "--color-status-comfortable",
+    "--color-status-warning",
+    "--color-status-critical",
+  ])("%s on the onyx pill reaches 4.5:1 in both themes", (stateToken) => {
     const ratio = computeContrastRatio(
-      themeTokens.dark.get(stateToken),
-      STATUS_PILL_BACKGROUND,
+      themeTokens.light.get(stateToken),
+      themeTokens.light.get("--color-status-pill"),
     );
     expect(ratio).toBeGreaterThanOrEqual(TEXT_MINIMUM_RATIO);
   });

@@ -16,16 +16,26 @@ export default {
     saveError: "Le réglage n’a pas pu être enregistré.",
   },
   limits: {
+    title: "Limites",
+    paceLabel: "Avance sur le rythme",
+    remainingLabel: "Réinitialisation dans",
+    comparisonLabel: "Par rapport à la semaine dernière",
+    notRecorded: "Non relevé",
     loading: "Chargement des limites…",
     loadError: "Atropos n’a pas pu lire les limites.",
     retry: "Réessayer",
     emptyTitle: "Aucune limite relevée pour l’instant",
     emptyText:
-      "Les limites sont relevées par la barre d’état de Claude Code. Ouvrez Claude Code dans un terminal et envoyez un message : elles apparaissent ici en moins de six minutes.",
+      "Les limites sont relevées par le mod Atropos dans Claude Code. Ouvrez Claude Code et envoyez un message : elles apparaissent ici en moins de six minutes.",
     fiveHourTitle: "Session (5 heures)",
     sevenDayTitle: "Semaine",
     fiveHourReset: "à {time}",
     updatedPrefix: "Mis à jour",
+  },
+  usageLevels: {
+    comfortable: "Confortable",
+    warning: "Attention",
+    critical: "Critique",
   },
   gauge: {
     used: "{percentage}\u00a0% utilisés",

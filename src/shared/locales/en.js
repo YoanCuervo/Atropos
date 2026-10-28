@@ -17,16 +17,26 @@ export default {
     saveError: "The setting could not be saved.",
   },
   limits: {
+    title: "Limits",
+    paceLabel: "Pace margin",
+    remainingLabel: "Resets in",
+    comparisonLabel: "Compared with last week",
+    notRecorded: "Not recorded",
     loading: "Loading limits…",
     loadError: "Atropos could not read the limits.",
     retry: "Try again",
     emptyTitle: "No limits recorded yet",
     emptyText:
-      "Limits are recorded by the Claude Code status line. Open Claude Code in a terminal and send a message: they appear here within six minutes.",
+      "Limits are recorded by the Atropos mod in Claude Code. Open Claude Code and send a message: they appear here within six minutes.",
     fiveHourTitle: "Session (5 hours)",
     sevenDayTitle: "Week",
     fiveHourReset: "at {time}",
     updatedPrefix: "Updated",
+  },
+  usageLevels: {
+    comfortable: "Comfortable",
+    warning: "Watch",
+    critical: "Critical",
   },
   gauge: {
     used: "{percentage}% used",

@@ -108,7 +108,7 @@ function renderHistoryContent({
         <p>{historyMessages.loadError}</p>
         <button
           type="button"
-          className="limits-view__button"
+          className="pill-button"
           onClick={reloadLimitHistory}
         >
           {historyMessages.retry}
