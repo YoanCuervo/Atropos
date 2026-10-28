@@ -12,26 +12,29 @@ import { importJournal } from "./journal-import.js";
  */
 
 /**
- * Imports the journal written by the status line, then purges snapshots and sent alerts
- * older than the retention period.
+ * Imports the journals written by the mod and the status line, then purges snapshots
+ * and sent alerts older than the retention period.
  *
  * @param {object} historyMaintenance
- * @param {string} historyMaintenance.journalPath
+ * @param {string[]} historyMaintenance.journalPaths The current journal, then any left at an older location.
  * @param {LimitSnapshotsRepository} historyMaintenance.limitSnapshotsRepository
  * @param {SentAlertsRepository} historyMaintenance.sentAlertsRepository
  * @param {number} historyMaintenance.nowMs
  * @returns {Promise<HistoryMaintenanceResult>}
  */
 export async function maintainHistory({
-  journalPath,
+  journalPaths,
   limitSnapshotsRepository,
   sentAlertsRepository,
   nowMs,
 }) {
-  const importedSnapshotCount = await importJournal(
-    journalPath,
-    limitSnapshotsRepository,
-  );
+  let importedSnapshotCount = 0;
+  for (const journalPath of journalPaths) {
+    importedSnapshotCount += await importJournal(
+      journalPath,
+      limitSnapshotsRepository,
+    );
+  }
   const retentionCutoffIso = new Date(
     computeRetentionCutoffMs(nowMs),
   ).toISOString();
