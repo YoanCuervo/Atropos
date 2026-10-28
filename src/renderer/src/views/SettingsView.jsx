@@ -9,7 +9,7 @@ import WeeklyAlertSettings from "../components/WeeklyAlertSettings.jsx";
 /** @typedef {import("../../../shared/locales/index.js").Messages} Messages */
 
 /**
- * Display, weekly alert, history clearing, status line setup and version.
+ * Display, weekly alert, history clearing, version and status line setup.
  *
  * @param {object} props
  * @param {Settings} props.settings
@@ -40,8 +40,8 @@ function SettingsView({ settings, messages, onSettingsChange, hasSaveFailed }) {
           onSettingsChange={onSettingsChange}
         />
         <HistoryClearing clearingMessages={messages.historyClearing} />
-        <StatusLineSetup setupMessages={messages.statusLineSetup} />
         <AboutSettings aboutMessages={messages.about} />
+        <StatusLineSetup setupMessages={messages.statusLineSetup} />
       </div>
     </section>
   );
