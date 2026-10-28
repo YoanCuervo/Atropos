@@ -10,7 +10,7 @@ import { getMessages } from "../shared/locales/index.js";
 /** @typedef {import("../core/settings.js").Settings} Settings */
 /** @typedef {import("./database/sent-alerts-repository.js").SentAlertsRepository} SentAlertsRepository */
 
-// Keeps the notification alive until Windows reports whether it could be shown.
+/** Keeps the notification alive until Windows reports whether it could be shown. */
 let shownNotification = null;
 
 /**

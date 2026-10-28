@@ -49,7 +49,6 @@ export default [
     rules: {
       ...eslintPluginReactHooks.configs.recommended.rules,
       ...eslintPluginReactRefresh.configs.vite.rules,
-      // React 19 no longer checks propTypes; component props are typed with JSDoc instead.
       "react/prop-types": "off",
     },
   },

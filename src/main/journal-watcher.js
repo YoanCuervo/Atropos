@@ -1,8 +1,10 @@
 import { watch } from "node:fs";
 import { basename, dirname } from "node:path";
 
-// The mod and the status line append a few lines in a row: waiting a moment
-// imports them together instead of once per line.
+/**
+ * The mod and the status line append a few lines in a row: waiting a moment
+ * imports them together instead of once per line.
+ */
 const JOURNAL_SETTLE_DELAY_MS = 1000;
 
 /**
