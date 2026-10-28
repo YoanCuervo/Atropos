@@ -5,6 +5,7 @@ directories:
 files:
   - out/**
   - "!out/statusline/**"
+  - "!out/mod/**"
   - resources/**
   - package.json
 asarUnpack:

@@ -1,0 +1,39 @@
+name: Publish mod
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-mod
+  cancel-in-progress: false
+
+jobs:
+  publish-mod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx vite build --config mod.vite.config.mjs
+
+      # The mod branch only ever holds the built mod, so it is rebuilt as a single orphan commit.
+      - name: Push the built mod to the mod branch
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          cd out/mod
+          git init --initial-branch=mod
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit --message "chore(mod): publish ${RELEASE_TAG}"
+          git push --force \
+            "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" \
+            mod:mod
