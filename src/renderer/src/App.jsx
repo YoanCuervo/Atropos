@@ -1,6 +1,7 @@
 import { useState } from "react";
-import AtroposLogo from "./components/AtroposLogo.jsx";
-import ViewNavigation from "./components/ViewNavigation.jsx";
+import { findLatestSnapshot } from "../../core/snapshot-journal.js";
+import Sidebar from "./components/Sidebar.jsx";
+import { useLimitsOverview } from "./hooks/useLimitsOverview.js";
 import { useSettings } from "./hooks/useSettings.js";
 import HistoryView from "./views/HistoryView.jsx";
 import LimitsView from "./views/LimitsView.jsx";
@@ -8,32 +9,36 @@ import SettingsView from "./views/SettingsView.jsx";
 
 function App() {
   const { settings, messages, changeSettings, hasSaveFailed } = useSettings();
+  const limitsOverviewState = useLimitsOverview();
   const [currentView, setCurrentView] = useState(
-    /** @type {import("./components/ViewNavigation.jsx").ViewName} */ (
-      "limits"
-    ),
+    /** @type {import("./components/Sidebar.jsx").ViewName} */ ("limits"),
   );
 
   if (settings === null) {
     return null;
   }
 
+  const { limitsOverview } = limitsOverviewState;
+  const latestSnapshot =
+    limitsOverview === null
+      ? null
+      : findLatestSnapshot([limitsOverview.fiveHour, limitsOverview.sevenDay]);
+
   return (
-    <>
-      <header className="app-header">
-        <h1 className="app-header__title">
-          <AtroposLogo />
-          Atropos
-        </h1>
-        <p className="app-header__subtitle">{messages.app.subtitle}</p>
-      </header>
-      <ViewNavigation
+    <div className="app-layout">
+      <Sidebar
         currentView={currentView}
         onViewChange={setCurrentView}
-        navigationMessages={messages.navigation}
+        lastRecordedAt={latestSnapshot?.slotStartedAt ?? null}
+        messages={messages}
       />
       <main className="app-main">
-        {currentView === "limits" && <LimitsView messages={messages} />}
+        {currentView === "limits" && (
+          <LimitsView
+            limitsOverviewState={limitsOverviewState}
+            messages={messages}
+          />
+        )}
         {currentView === "history" && <HistoryView messages={messages} />}
         {currentView === "settings" && (
           <SettingsView
@@ -44,7 +49,7 @@ function App() {
           />
         )}
       </main>
-    </>
+    </div>
   );
 }
 

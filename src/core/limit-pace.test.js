@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   WINDOW_DURATIONS_MS,
   computePaceDeltaPercentage,
+  convertSnapshotToLimitWindow,
 } from "./limit-pace.js";
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -54,5 +55,22 @@ describe("computePaceDeltaPercentage", () => {
       NOW_MS,
     );
     expect(delta).toBeCloseTo(-5);
+  });
+});
+
+describe("convertSnapshotToLimitWindow", () => {
+  it("turns the reset time into a timestamp", () => {
+    expect(
+      convertSnapshotToLimitWindow({
+        slotStartedAt: "2026-10-28T08:00:00.000Z",
+        windowKind: "seven_day",
+        usedPercentage: 67,
+        resetsAt: "2026-10-29T08:00:00.000Z",
+      }),
+    ).toEqual({
+      windowKind: "seven_day",
+      usedPercentage: 67,
+      resetsAtMs: NOW_MS + 24 * HOUR_MS,
+    });
   });
 });

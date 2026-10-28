@@ -5,9 +5,6 @@
 export default {
   languageName: "English",
   dateLocale: "en-GB",
-  app: {
-    subtitle: "Claude Code usage limits",
-  },
   preferences: {
     title: "Display",
     languageLabel: "Language",
@@ -20,16 +17,26 @@ export default {
     saveError: "The setting could not be saved.",
   },
   limits: {
+    title: "Limits",
+    paceLabel: "Pace margin",
+    remainingLabel: "Resets in",
+    comparisonLabel: "Compared with last week",
+    notRecorded: "Not recorded",
     loading: "Loading limits…",
     loadError: "Atropos could not read the limits.",
     retry: "Try again",
     emptyTitle: "No limits recorded yet",
     emptyText:
-      "Limits are recorded by the Claude Code status line. Open Claude Code in a terminal and send a message: they appear here within six minutes.",
+      "Limits are recorded by the Atropos mod in Claude Code. Open Claude Code and send a message: they appear here within six minutes.",
     fiveHourTitle: "Session (5 hours)",
     sevenDayTitle: "Week",
     fiveHourReset: "at {time}",
     updatedPrefix: "Updated",
+  },
+  usageLevels: {
+    comfortable: "Comfortable",
+    warning: "Watch",
+    critical: "Critical",
   },
   gauge: {
     used: "{percentage}% used",
@@ -98,14 +105,14 @@ export default {
   statusLineSetup: {
     title: "Status line",
     explanation:
-      "Atropos records your limits through the Claude Code status line. Atropos never edits your Claude Code settings: you add the status line yourself.",
+      "The Atropos mod records your limits in Claude Code. The status line is a fallback for a terminal where the mod is not loaded. Atropos never edits your Claude Code settings: you add it yourself.",
     stepOpen: "Open the Claude Code settings file, ~/.claude/settings.json.",
     stepPaste:
       "Add the block below at the top level of the file, then save it.",
     stepUse:
       "Use Claude Code in a terminal, signed in with a Pro or Max plan. Limits appear here within six minutes.",
     desktopNote:
-      "Only Claude Code in a terminal runs the status line: the desktop app does not record limits.",
+      "Only Claude Code in a terminal runs the status line. The desktop app records limits through the mod only.",
     codeLabel: "Block to add to ~/.claude/settings.json",
     copyButton: "Copy",
     copied: "Copied.",

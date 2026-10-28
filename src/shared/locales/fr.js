@@ -4,9 +4,6 @@
 export default {
   languageName: "Français",
   dateLocale: "fr-FR",
-  app: {
-    subtitle: "Limites d’utilisation de Claude Code",
-  },
   preferences: {
     title: "Affichage",
     languageLabel: "Langue",
@@ -19,16 +16,26 @@ export default {
     saveError: "Le réglage n’a pas pu être enregistré.",
   },
   limits: {
+    title: "Limites",
+    paceLabel: "Avance sur le rythme",
+    remainingLabel: "Réinitialisation dans",
+    comparisonLabel: "Par rapport à la semaine dernière",
+    notRecorded: "Non relevé",
     loading: "Chargement des limites…",
     loadError: "Atropos n’a pas pu lire les limites.",
     retry: "Réessayer",
     emptyTitle: "Aucune limite relevée pour l’instant",
     emptyText:
-      "Les limites sont relevées par la barre d’état de Claude Code. Ouvrez Claude Code dans un terminal et envoyez un message : elles apparaissent ici en moins de six minutes.",
+      "Les limites sont relevées par le mod Atropos dans Claude Code. Ouvrez Claude Code et envoyez un message : elles apparaissent ici en moins de six minutes.",
     fiveHourTitle: "Session (5 heures)",
     sevenDayTitle: "Semaine",
     fiveHourReset: "à {time}",
     updatedPrefix: "Mis à jour",
+  },
+  usageLevels: {
+    comfortable: "Confortable",
+    warning: "Attention",
+    critical: "Critique",
   },
   gauge: {
     used: "{percentage}\u00a0% utilisés",
@@ -98,7 +105,7 @@ export default {
   statusLineSetup: {
     title: "Barre d’état",
     explanation:
-      "Atropos relève vos limites grâce à la barre d’état de Claude Code. Atropos ne modifie jamais vos réglages de Claude Code : c’est vous qui ajoutez la barre d’état.",
+      "Le mod Atropos relève vos limites dans Claude Code. La barre d’état sert de secours dans un terminal où le mod n’est pas chargé. Atropos ne modifie jamais vos réglages de Claude Code : c’est vous qui l’ajoutez.",
     stepOpen:
       "Ouvrez le fichier de réglages de Claude Code, ~/.claude/settings.json.",
     stepPaste:
@@ -106,7 +113,7 @@ export default {
     stepUse:
       "Utilisez Claude Code dans un terminal, connecté avec un abonnement Pro ou Max. Les limites apparaissent ici en moins de six minutes.",
     desktopNote:
-      "Seul Claude Code en terminal lance la barre d’état : l’application de bureau ne relève pas les limites.",
+      "Seul Claude Code dans un terminal lance la barre d’état. L’application de bureau relève les limites uniquement grâce au mod.",
     codeLabel: "Bloc à ajouter à ~/.claude/settings.json",
     copyButton: "Copier",
     copied: "Copié.",

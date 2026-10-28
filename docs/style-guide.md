@@ -89,7 +89,7 @@ Les noms existants de `app.css` sont conservés pour limiter la migration. Les j
 ### Règles d'usage
 
 - **Focus dans la carte principale :** le contour prend `--color-on-emphasis`, car `--color-focus` ne contraste pas assez avec la terre cuite.
-- **État des jauges dans la carte principale :** la barre garde `--color-emphasis-accent`. L'état s'affiche dans une pastille onyx (`#141210`) dont le texte prend la valeur sombre de la couleur d'état. Cette pastille est lisible dans les deux thèmes, de 5,4:1 à 9,0:1.
+- **État des jauges dans la carte principale :** la barre garde `--color-emphasis-accent`. L'état (Confortable, Attention, Critique, seuils de 50 et 80 %) s'affiche dans une pastille `--color-status-pill` dont le texte prend `--color-status-*`, la valeur sombre de la couleur d'état, dans les deux thèmes. Cette pastille est lisible dans les deux thèmes, de 5,4:1 à 9,0:1.
 - **Une seule carte principale par vue**, et au plus une seconde carte onyx ou terre cuite pour une action secondaire.
 - **Pas d'opacité sur le texte.** Le texte secondaire a sa propre couleur.
 - **Pas de texte secondaire dans un encadré.** `--color-on-emphasis-muted` sur `--color-emphasis-tile` tombe à 3,9:1 en sombre : les encadrés n’utilisent que `--color-on-emphasis-tile`.
@@ -111,22 +111,22 @@ Les chiffres utilisent `font-variant-numeric: tabular-nums` pour ne pas bouger q
 
 ## 6. Mise en page
 
-- **Barre latérale** de 7,5 rem : le logo, les trois vues (Limits, History, Settings) et, en bas, l'état de la barre d'état de Claude Code.
-- **Grille de cartes** dans la zone principale, en CSS Grid, avec un écart de `--space-small`. Elle passe à une colonne sous 40 rem de large.
+- **Barre latérale** de 7,5 rem : le logo, les trois vues (Limits, History, Settings) et, en bas, une frise et l'étiquette d'heure de la dernière mesure.
+- **Grille de cartes** dans la zone principale, en CSS Grid, avec un écart de `--space-small`. Trois colonnes, la carte principale en occupe deux. Elle passe à une colonne quand la zone principale fait moins de 40 rem (requête de conteneur).
 - **Rayons :** 0,875 rem pour les cartes, 0,5 rem pour les encadrés, en pilule pour les boutons et les étiquettes.
 - **Pas d'ombre portée.** Les plans se distinguent par la couleur de fond.
 - **Fond :** une texture de marbre discrète est possible en `background-image` sur la page uniquement, jamais sous une carte. Elle disparaît avec `prefers-reduced-transparency` et en contraste élevé (`forced-colors`).
 
 ## 7. Composants
 
-| Composant             | Fond               | Contenu                                                                    |
-| --------------------- | ------------------ | -------------------------------------------------------------------------- |
-| Carte principale      | `--color-emphasis` | Limite hebdomadaire : chiffre, `<meter>`, remise à zéro, trois encadrés    |
-| Carte d'anneau        | `--color-surface`  | Fenêtre de 5 h : anneau SVG décoratif doublé d'un `<meter>`, remise à zéro |
-| Carte de courbe       | `--color-surface`  | Historique 7 ou 30 jours, bouton « Show as table »                         |
-| Élément de menu actif | `--color-emphasis` | Libellé et icône, `aria-current="page"`                                    |
-| Étiquette d'heure     | `--color-emphasis` | « Updated 14:06 » dans un `<time datetime>`                                |
-| Bouton secondaire     | transparent        | Bordure `--color-control-border`, en pilule                                |
+| Composant             | Fond               | Contenu                                                                                                                                                        |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Carte principale      | `--color-emphasis` | Limite hebdomadaire : chiffre, pastille d’état, `<meter>`, remise à zéro, trois encadrés (avance sur le rythme, temps restant, écart avec la semaine dernière) |
+| Carte d'anneau        | `--color-surface`  | Fenêtre de 5 h : anneau SVG décoratif doublé d'un `<meter>`, remise à zéro                                                                                     |
+| Carte de courbe       | `--color-surface`  | Historique 7 ou 30 jours, bouton « Show as table »                                                                                                             |
+| Élément de menu actif | `--color-emphasis` | Libellé et icône, `aria-current="page"`                                                                                                                        |
+| Étiquette d'heure     | `--color-emphasis` | « Updated 14:06 » dans un `<time datetime>`                                                                                                                    |
+| Bouton secondaire     | transparent        | Bordure `--color-control-border`, en pilule                                                                                                                    |
 
 L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible reste portée par un `<meter>`.
 
@@ -137,10 +137,10 @@ L'anneau est purement décoratif (`aria-hidden="true"`). La valeur accessible re
 
 ## 9. Logo et icônes
 
-**Concept :** des ciseaux qui coupent un fil, et ce fil forme l'arc d'une jauge.
+**Concept :** un « A » en chevron, sans barre, dont la jambe droite est coupée par des ciseaux.
 
 - Tracé SVG simple, en terre cuite sur fond onyx pour l'icône de l'app.
-- Lisible à 16 px pour l'icône près de l'horloge. Sous cette taille, seul l'arc est gardé.
+- Lisible à 16 px pour l'icône près de l'horloge. Sous 32 px, le glyphe garde le A et sa jambe coupée, sans les ciseaux.
 - Variantes : `icon.svg` et `icon-glyph.svg` (sources), `icon.ico` (application, 16 à 256 px) et les PNG de la zone de notification, d’une seule couleur lisible sur les deux barres des tâches. Le détail est dans [logo-spec.md](logo-spec.md).
 - Aucun nom, logo ni forme évoquant Claude ou Anthropic.
 

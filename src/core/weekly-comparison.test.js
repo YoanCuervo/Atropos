@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { compareWithPreviousWeek } from "./weekly-comparison.js";
+import {
+  compareWithPreviousWeek,
+  describeWeeklyDifference,
+} from "./weekly-comparison.js";
 
 const CURRENT_RESET = "2026-10-29T08:00:00.000Z";
 const PREVIOUS_RESET = "2026-10-22T08:00:00.000Z";
@@ -78,5 +81,27 @@ describe("compareWithPreviousWeek", () => {
       previousPercentageAtSamePoint: null,
       previousLastPercentage: null,
     });
+  });
+});
+
+describe("describeWeeklyDifference", () => {
+  const differenceMessages = {
+    same: "Same as last week",
+    onePointLess: "1 point less",
+    pointsLess: "{points} points less",
+    onePointMore: "1 point more",
+    pointsMore: "{points} points more",
+  };
+
+  it.each([
+    [40, 48, "8 points less"],
+    [40.4, 41.4, "1 point less"],
+    [52, 40, "12 points more"],
+    [41, 40, "1 point more"],
+    [40.2, 39.8, "Same as last week"],
+  ])("compares %s%% with %s%%", (current, previous, description) => {
+    expect(
+      describeWeeklyDifference(current, previous, differenceMessages),
+    ).toBe(description);
   });
 });

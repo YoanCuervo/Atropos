@@ -118,6 +118,21 @@ export function parseReadableJournalLines(journalLines) {
 }
 
 /**
+ * @param {(LimitSnapshot | null)[]} limitSnapshots Missing windows are `null`.
+ * @returns {LimitSnapshot | null} The snapshot taken in the most recent slot, or `null` when there is none.
+ */
+export function findLatestSnapshot(limitSnapshots) {
+  return limitSnapshots.reduce(
+    (latest, candidate) =>
+      candidate !== null &&
+      (latest === null || candidate.slotStartedAt > latest.slotStartedAt)
+        ? candidate
+        : latest,
+    null,
+  );
+}
+
+/**
  * Keeps the candidate snapshots whose slot and window are not recorded yet,
  * so the journal holds at most one snapshot per slot and per window: the first one observed.
  *
