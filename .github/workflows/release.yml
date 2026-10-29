@@ -61,7 +61,7 @@ jobs:
           The mod is published to the `mod` branch when this release is published.
           NOTES
           gh release create "$GITHUB_REF_NAME" \
-            "dist/atropos-${{ steps.version.outputs.app_version }}-setup.exe" \
+            "dist/Atropos-Setup.exe" \
             --draft ${{ steps.version.outputs.prerelease_flag }} \
             --title "Atropos $GITHUB_REF_NAME" \
             --notes-file release-notes.md \

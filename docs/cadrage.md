@@ -233,6 +233,7 @@ Ces principes sont permanents, indépendamment du risque légal.
 - **Construction du script de barre d'état :** il doit être livré avec les fichiers de `core/` dont il dépend.
 - **Installation du mod :** dossier déclaré dans `CLAUDE_CODE_PLUGIN_DIRS` pour le développement, puis place de marché GitHub (`/plugin install`) à la publication. À trancher pendant la tâche de publication.
 - **Carte « Le fil » :** date d'épuisement de la limite hebdomadaire au rythme actuel. Reportée en V1.1, voir [style-guide.md](style-guide.md).
+- **Vidéo de la page de téléchargement :** l'image fixe du hero (`site/assets/hero-poster.jpg`) sera remplacée par une vidéo en boucle générée avec Seedance. Elle devra avoir un bouton pause (RGAA 13.8), garder l'image fixe sous `prefers-reduced-motion` et faire revérifier les contrastes du texte posé dessus.
 
 ## 13. Découpage de la V1
 
@@ -262,3 +263,4 @@ Une tâche correspond à une session et à une branche `feature/*` partie de `de
 | 18  | Audit `/conform-rgaa`, puis corrections                                                                                                    | `feature/accessibility-audit` |
 | 19  | Audit `/conform-cnil`, puis corrections                                                                                                    | `feature/privacy-audit`       |
 | 20  | Suppression des commentaires qui expliquent le code, fusion de `dev` dans `main`, tag `v1.0.0`                                             | —                             |
+| 21  | Page de téléchargement statique en anglais et en français, déployée sur GitHub Pages                                                       | `feature/landing-page`        |
